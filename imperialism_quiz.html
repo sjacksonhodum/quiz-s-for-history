@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Imperialism — Key Terms Quiz</title>
+<style>
+:root{
+  --paper:#f1e6cd; --paper2:#e7d8b4; --ink:#2b2116; --soft:#55452f;
+  --brass:#a97c1f; --deep:#7c5a13; --green:#dbe7d1; --greenInk:#3f5d3a;
+  --red:#f0d9d2; --redInk:#8f3a2e; --rule:#c9b587;
+}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse at top left,rgba(169,124,31,.08),transparent 60%),var(--paper);
+color:var(--ink);font-family:Georgia,"Times New Roman",serif;min-height:100vh}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;
+background:repeating-linear-gradient(transparent,transparent 27px,rgba(120,90,30,.06) 28px)}
+.wrap{max-width:920px;margin:auto;padding:28px 20px 70px;position:relative}
+header{text-align:center;border-bottom:4px double var(--deep);padding-bottom:18px;margin-bottom:22px}
+.eyebrow{font-family:monospace;letter-spacing:3px;text-transform:uppercase;font-size:12px;color:var(--deep)}
+h1{font-size:clamp(30px,5vw,48px);margin:7px 0 5px}
+.sub{font-style:italic;color:var(--soft);font-size:15px}
+.deck{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:center;background:var(--paper2);
+border:1px solid var(--rule);border-radius:10px;padding:14px 18px;margin-bottom:26px}
+button{font:600 14px Georgia,serif;border:1px solid var(--deep);background:var(--brass);color:#fff9ec;
+padding:9px 16px;border-radius:6px;cursor:pointer}
+button:hover{background:var(--deep)}
+button.secondary{background:transparent;color:var(--ink);border-color:var(--soft)}
+.timer{font-family:monospace;font-size:25px;background:var(--ink);color:var(--paper);padding:6px 14px;border-radius:6px;min-width:90px;text-align:center}
+.timer.warn{background:var(--redInk)}
+.score{font-family:monospace;color:var(--soft)}
+.score strong{color:var(--ink);font-size:17px}
+.section{background:rgba(255,252,242,.55);border:1px solid var(--rule);border-radius:8px;padding:20px}
+.bank-label{font-family:monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--deep);margin:0 0 8px}
+.bank{display:flex;flex-wrap:wrap;gap:8px;min-height:44px;padding:10px;background:var(--paper2);border:1px dashed var(--rule);border-radius:8px}
+.chip{font-size:13.5px;background:#fffdf6;border:1px solid var(--brass);padding:7px 12px;border-radius:999px;
+cursor:pointer;user-select:none;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.chip:hover{box-shadow:0 2px 5px rgba(0,0,0,.15)}
+.chip.selected{background:var(--brass);color:#fff9ec}
+.chip.dragging{opacity:.35}.chip.placed{display:none}
+.items{margin-top:16px;display:flex;flex-direction:column;gap:10px}
+.item{display:flex;align-items:flex-start;gap:12px;padding:8px 4px;border-bottom:1px solid var(--rule)}
+.item:last-child{border-bottom:0}
+.num{font-family:monospace;color:var(--deep);min-width:24px;padding-top:2px}
+.def{flex:1 1 300px;font-size:14px;line-height:1.45}
+.slot{flex:0 0 225px;min-height:40px;border:2px solid var(--rule);border-radius:6px;background:#fffdf6;
+display:flex;align-items:center;justify-content:center;text-align:center;font-size:13px;font-weight:600;
+padding:5px 8px;cursor:pointer}
+.slot.dragover{border-color:var(--brass);background:var(--paper2)}
+.slot.filled{color:var(--ink)}.slot.correct{background:var(--green);border-color:var(--greenInk);color:var(--greenInk)}
+.slot.incorrect{background:var(--red);border-color:var(--redInk);color:var(--redInk)}
+.hint{font-style:italic;font-weight:400;opacity:.6;font-size:12px}
+.answer-key{display:block;font-size:11px;font-style:italic;font-weight:400;margin-top:2px}
+footer{text-align:center;font-size:12px;color:var(--soft);margin-top:12px;font-style:italic}
+@media(max-width:640px){.item{flex-direction:column}.slot{width:100%;flex:auto}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="eyebrow">U.S. History · Imperialism</div>
+  <h1>Imperialism Key Terms</h1>
+  <div class="sub">Drag or click each term into its matching definition — 22 terms, fully shuffled.</div>
+</header>
+
+<div class="deck">
+  <span class="timer" id="timer">25:00</span>
+  <button id="start">Start Timer</button>
+  <button id="check">Check Answers</button>
+  <button class="secondary" id="reset">Reset Everything</button>
+  <span class="score" id="score"></span>
+</div>
+
+<section class="section">
+  <div class="bank-label">Word Bank</div>
+  <div class="bank" id="bank"></div>
+  <div class="items" id="items"></div>
+</section>
+
+<footer>Click a term, then click a blank — or drag a term into a blank. Click a filled blank to return it to the word bank.</footer>
+</div>
+
+<script>
+const DATA = [['Alaska Purchase (1867)',"Also called Seward's Folly. Bought from Russia for $7.2 million. Discovery of natural resources like gold and oil proved the purchase was wise."],['Alfred T. Mahan','U.S. Navy officer who believed the U.S. needed to expand its Navy to increase its size and power around the world.'],['Yellow Journalism','Newspaper articles that are untruthful with the goal of selling papers. They are presently called tabloids. A leading cause of the Spanish-American War.'],['Spanish-American War','Also called the “Splendid Little War.” In 1898 it lasted 3 months. America vs. Spain. America wins and becomes a world power. Takes control of Cuba for 2 years. The U.S. gains the Philippines, Guam, & Puerto Rico.'],['USS Maine','U.S. Navy ship exploded in Havana harbor. Yellow journalists and American politicians blame Spain and use it as a reason for the Spanish-American War.'],['Theodore Roosevelt','Republican President 1901–09. McKinley’s Vice President. Becomes president after McKinley is assassinated. 1st Modern president. Builds Panama Canal and believes in Roosevelt Corollary. Leads Rough Riders at the Battle of San Juan Hill during the Spanish-American War.'],['Rough Riders','Volunteer Cavalry unit led by Teddy Roosevelt during the Spanish-American War.'],['Annexation of Hawaii (1898)','In 1898 the island became part of the United States for economic and military reasons.'],['Puerto Rico','Became part of the U.S. empire following the Spanish-American War.'],['Anti-Imperialist League','Group of Americans who did not support imperialism. They believed imperialism went against the ideals the country was founded on in the Constitution.'],['Platt Amendment','Allowed Cuba to be free from American rule following the Spanish-American War. Allowed the U.S. to intervene in Cuban affairs and gave the U.S. Guantanamo Bay military base.'],['Sphere of Influence','A territorial area over which political or economic influence is wielded by one nation.'],['Open Door Policy','U.S. policy in China calling for free trade in the country. The U.S. wanted no spheres of influence in China.'],['Boxer Rebellion','Violent anti-foreigner movement in China, 1899–1901. Many Chinese had grown tired of foreign imperialism and Christian missionaries.'],['Big Stick Policy','Teddy Roosevelt’s foreign policy. The idea is to negotiate peacefully but with the threat of military force to ensure positive results.'],['Panama Canal','Built through the isthmus of Panama. Allowed for quicker shipping by connecting the Pacific and Atlantic Oceans. Teddy Roosevelt negotiated the building of the canal by helping the Panamanians gain independence from Colombia.'],['Gentlemen’s Agreement','Agreement between the USA and Japan. Japan agreed to stop emigration to the U.S. of non-skilled workers. The U.S. agreed to end segregation laws aimed at the Japanese.'],['Roosevelt Corollary','Adds to the Monroe Doctrine. The U.S. will intervene in conflicts between Europe and Latin America. The U.S. has become the world’s police.'],['Dollar Diplomacy','Foreign policy of Howard Taft. The U.S. government encouraged investment in foreign countries to increase trade.'],['Moral Diplomacy','Foreign policy of Woodrow Wilson. Stated the U.S. would only support countries who had the same economic and democratic beliefs as the USA. Wanted to spread democracy and capitalism.'],['Teller Amendment','Passed after President McKinley’s Spanish-American War message. It stated the U.S. could go to war in Cuba but could not annex the island after the war.'],['Imperialism','Economic, military, and/or cultural influence of one country over other countries.']];
+
+function shuffle(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+const ALL_ITEMS=DATA.map(([ans,def])=>({ans,def}));
+let selected=null;
+
+function makeChip(term){
+  const c=document.createElement("div");
+  c.className="chip"; c.textContent=term; c.draggable=true; c.dataset.term=term;
+  c.addEventListener("dragstart",e=>{c.classList.add("dragging");e.dataTransfer.setData("text/plain",term)});
+  c.addEventListener("dragend",()=>c.classList.remove("dragging"));
+  c.addEventListener("click",()=>{
+    if(selected===c){c.classList.remove("selected");selected=null;return}
+    if(selected)selected.classList.remove("selected");
+    c.classList.add("selected");selected=c;
+  });
+  return c;
+}
+
+function place(slot,term,chip){
+  if(slot.classList.contains("filled")) returnToBank(slot);
+  if(!chip) chip=[...document.querySelectorAll(".chip")].find(x=>x.dataset.term===term&&!x.classList.contains("placed"));
+  if(chip) chip.classList.add("placed");
+  if(selected===chip){chip.classList.remove("selected");selected=null}
+  slot.textContent=term;
+  slot.classList.add("filled");
+  slot.classList.remove("correct","incorrect");
+  slot.dataset.placed=term;
+}
+
+function returnToBank(slot){
+  const term=slot.dataset.placed;
+  if(term){
+    const chip=[...document.querySelectorAll(".chip")].find(x=>x.dataset.term===term&&x.classList.contains("placed"));
+    if(chip)chip.classList.remove("placed");
+  }
+  slot.innerHTML='<span class="hint">drop term here</span>';
+  slot.classList.remove("filled","correct","incorrect");
+  delete slot.dataset.placed;
+}
+
+function build(){
+  const bank=document.getElementById("bank"), items=document.getElementById("items");
+  bank.innerHTML=""; items.innerHTML="";
+  shuffle(ALL_ITEMS.map(x=>x.ans)).forEach(t=>bank.appendChild(makeChip(t)));
+  shuffle(ALL_ITEMS).forEach((item,i)=>{
+    const row=document.createElement("div"); row.className="item";
+    const n=document.createElement("div"); n.className="num"; n.textContent=(i+1)+".";
+    const d=document.createElement("div"); d.className="def"; d.textContent=item.def;
+    const s=document.createElement("div"); s.className="slot"; s.dataset.answer=item.ans; s.tabIndex=0;
+    s.innerHTML='<span class="hint">drop term here</span>';
+    s.addEventListener("dragover",e=>{e.preventDefault();s.classList.add("dragover")});
+    s.addEventListener("dragleave",()=>s.classList.remove("dragover"));
+    s.addEventListener("drop",e=>{e.preventDefault();s.classList.remove("dragover");place(s,e.dataTransfer.getData("text/plain"))});
+    s.addEventListener("click",()=>s.classList.contains("filled")?returnToBank(s):selected&&place(s,selected.dataset.term,selected));
+    row.append(n,d,s); items.appendChild(row);
+  });
+  document.getElementById("score").textContent="";
+  selected=null;
+}
+
+function checkAnswers(){
+  let correct=0,filled=0;
+  document.querySelectorAll(".slot").forEach(s=>{
+    s.querySelector(".answer-key")?.remove();
+    if(!s.classList.contains("filled"))return;
+    filled++;
+    const right=s.dataset.placed===s.dataset.answer;
+    s.classList.toggle("correct",right); s.classList.toggle("incorrect",!right);
+    if(right)correct++;
+    else{
+      const key=document.createElement("span");
+      key.className="answer-key"; key.textContent="Answer: "+s.dataset.answer; s.appendChild(key);
+    }
+  });
+  document.getElementById("score").innerHTML="<strong>"+correct+" / "+ALL_ITEMS.length+"</strong> correct &nbsp;("+filled+" answered)";
+}
+
+const TOTAL=25*60; let left=TOTAL, interval=null;
+function fmt(s){return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}
+function update(){const t=document.getElementById("timer");t.textContent=fmt(left);t.classList.toggle("warn",left<=60)}
+document.getElementById("start").onclick=()=>{
+  if(interval)return;
+  document.getElementById("start").disabled=true;
+  interval=setInterval(()=>{
+    left--; update();
+    if(left<=0){clearInterval(interval);interval=null;document.getElementById("start").disabled=false;document.getElementById("timer").textContent="Time's up!"}
+  },1000);
+};
+document.getElementById("check").onclick=checkAnswers;
+document.getElementById("reset").onclick=()=>{
+  clearInterval(interval);interval=null;left=TOTAL;
+  document.getElementById("start").disabled=false;update();build();
+};
+build(); update();
+</script>
+</body>
+</html>

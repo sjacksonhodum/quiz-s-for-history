@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gilded Age — Key Terms Ledger</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Special+Elite&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #f1e6cd;
+    --paper-dark: #e7d8b4;
+    --ink: #2b2116;
+    --ink-soft: #55452f;
+    --brass: #a97c1f;
+    --brass-deep: #7c5a13;
+    --green: #3f5d3a;
+    --green-bg: #dbe7d1;
+    --red: #8f3a2e;
+    --red-bg: #f0d9d2;
+    --rule: #c9b587;
+  }
+  *{ box-sizing: border-box; }
+  html,body{
+    margin:0; padding:0;
+    background:
+      radial-gradient(ellipse at top left, rgba(169,124,31,0.08), transparent 60%),
+      var(--paper);
+    color: var(--ink);
+    font-family: 'Lora', serif;
+    min-height:100vh;
+  }
+  body::before{
+    content:"";
+    position: fixed; inset:0;
+    background-image:
+      repeating-linear-gradient(transparent, transparent 27px, rgba(120,90,30,0.06) 28px);
+    pointer-events:none;
+    z-index:0;
+  }
+  .wrap{ max-width: 920px; margin:0 auto; padding: 28px 20px 80px; position:relative; z-index:1; }
+
+  header.masthead{
+    text-align:center;
+    border-bottom: 4px double var(--brass-deep);
+    padding-bottom: 18px;
+    margin-bottom: 22px;
+  }
+  header.masthead .eyebrow{
+    font-family:'Special Elite', monospace;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-size: 12px;
+    color: var(--brass-deep);
+  }
+  header.masthead h1{
+    font-family:'Playfair Display', serif;
+    font-weight: 800;
+    font-size: clamp(30px, 5vw, 48px);
+    margin: 6px 0 4px;
+    letter-spacing: 0.5px;
+  }
+  header.masthead .sub{
+    font-style: italic;
+    color: var(--ink-soft);
+    font-size: 15px;
+  }
+
+  /* control deck */
+  .deck{
+    display:flex; flex-wrap:wrap; gap:14px;
+    align-items:center; justify-content:center;
+    background: var(--paper-dark);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 26px;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.25);
+  }
+  .timer-block{ display:flex; align-items:center; gap:10px; }
+  .timer-display{
+    font-family:'Special Elite', monospace;
+    font-size: 26px;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 6px 14px;
+    border-radius: 6px;
+    min-width: 92px;
+    text-align:center;
+    letter-spacing: 1px;
+  }
+  .timer-display.warn{ background: var(--red); }
+  button{
+    font-family:'Lora', serif;
+    font-weight: 600;
+    font-size: 14px;
+    border: 1px solid var(--brass-deep);
+    background: var(--brass);
+    color: #fff9ec;
+    padding: 9px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: transform 0.08s ease, background 0.15s ease;
+  }
+  button:hover{ background: var(--brass-deep); }
+  button:active{ transform: translateY(1px); }
+  button:disabled{ opacity:0.45; cursor:not-allowed; }
+  button.secondary{
+    background: transparent;
+    color: var(--ink);
+    border-color: var(--ink-soft);
+  }
+  button.secondary:hover{ background: rgba(0,0,0,0.06); }
+  button:focus-visible, .chip:focus-visible, .slot:focus-visible{
+    outline: 3px solid var(--brass-deep);
+    outline-offset: 2px;
+  }
+
+  .score-badge{
+    font-family:'Special Elite', monospace;
+    font-size: 15px;
+    color: var(--ink-soft);
+  }
+  .score-badge strong{ color: var(--ink); font-size: 17px; }
+
+  /* section */
+  .section{
+    margin-bottom: 34px;
+    background: rgba(255,252,242,0.55);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 20px 20px 22px;
+  }
+  .section h2{
+    font-family:'Playfair Display', serif;
+    font-size: 22px;
+    margin: 0 0 4px;
+    border-bottom: 2px solid var(--brass);
+    padding-bottom: 8px;
+    display:flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 10px;
+  }
+  .section h2 .count{
+    font-family:'Lora', serif;
+    font-weight: 400;
+    font-style: italic;
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+
+  .bank-label{
+    font-family:'Special Elite', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--brass-deep);
+    margin: 14px 0 8px;
+  }
+  .bank{
+    display:flex; flex-wrap:wrap; gap:8px;
+    min-height: 44px;
+    padding: 10px;
+    background: var(--paper-dark);
+    border: 1px dashed var(--rule);
+    border-radius: 8px;
+  }
+  .chip{
+    font-size: 13.5px;
+    background: #fffdf6;
+    border: 1px solid var(--brass);
+    color: var(--ink);
+    padding: 7px 12px;
+    border-radius: 999px;
+    cursor: grab;
+    user-select: none;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+    transition: box-shadow 0.15s, background 0.15s, opacity 0.15s;
+  }
+  .chip:hover{ box-shadow: 0 2px 5px rgba(0,0,0,0.15); }
+  .chip.selected{
+    background: var(--brass);
+    color: #fff9ec;
+  }
+  .chip.dragging{ opacity: 0.35; }
+  .chip.placed{ display:none; }
+
+  .items{ margin-top: 16px; display:flex; flex-direction:column; gap:10px; }
+  .item{
+    display:flex; align-items:flex-start; gap:12px;
+    padding: 8px 4px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .item:last-child{ border-bottom:none; }
+  .num{
+    font-family:'Special Elite', monospace;
+    color: var(--brass-deep);
+    min-width: 22px;
+    font-size: 14px;
+    padding-top: 2px;
+  }
+  .def{ flex: 1 1 280px; font-size: 14px; line-height: 1.45; color: var(--ink); }
+  .slot{
+    flex: 0 0 210px;
+    min-height: 38px;
+    border: 2px solid var(--rule);
+    border-radius: 6px;
+    background: #fffdf6;
+    display:flex; align-items:center; justify-content:center;
+    text-align:center;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    padding: 4px 8px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .slot.dragover{ border-color: var(--brass); background: var(--paper-dark); }
+  .slot.filled{ color: var(--ink); border-style: solid; }
+  .slot.correct{ background: var(--green-bg); border-color: var(--green); color: var(--green); }
+  .slot.incorrect{ background: var(--red-bg); border-color: var(--red); color: var(--red); }
+  .slot .hint{ font-style: italic; font-weight: 400; opacity: 0.6; font-size: 12px; }
+  .slot .answer-key{
+    display:block; font-weight:400; font-style:italic; font-size:11px; margin-top:2px;
+  }
+
+  @media (max-width: 640px){
+    .item{ flex-direction: column; }
+    .slot{ flex: 1 1 auto; width:100%; }
+  }
+
+  footer.note{
+    text-align:center;
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-top: 10px;
+    font-style: italic;
+  }
+
+  .top-actions{
+    position: sticky; top: 0; z-index: 5;
+    display:flex; justify-content:center; gap:10px;
+    padding: 10px 0;
+    margin-bottom: 4px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="masthead">
+    <div class="eyebrow">U.S. History · Unit 1</div>
+    <h1>The Gilded Age Ledger</h1>
+    <div class="sub">Drag each term from the word bank into its matching definition — 63 terms, fully shuffled.</div>
+  </header>
+
+  <div class="deck">
+    <div class="timer-block">
+      <span class="timer-display" id="timerDisplay">25:00</span>
+      <button id="startBtn">Start Timer</button>
+    </div>
+    <button id="checkBtn">Check Answers</button>
+    <button id="resetBtn" class="secondary">Reset Everything</button>
+    <span class="score-badge" id="scoreBadge"></span>
+  </div>
+
+  <div class="section">
+    <div class="bank-label">Word Bank</div>
+    <div class="bank" id="bank-0"></div>
+    <div class="items" id="items"></div>
+  </div>
+
+  <footer class="note">Click or drag a term chip into a blank. Click a filled blank to send the term back to its word bank.</footer>
+</div>
+
+<script>
+const DATA = [
+  {
+    name: "The New South",
+    items: [
+      {n:1, def:"Supreme court case legalizing segregation (1896). Concluded separate but equal did not violate the 14th amendment. Legalized Jim Crow laws in the South.", ans:"Plessy v. Ferguson"},
+      {n:2, def:"Segregation ordinances in the South requiring people to be separate by race (restrooms, theaters, restaurants, etc.)", ans:"Jim Crow Laws"},
+      {n:3, def:"Allowed citizens to vote whose grandfather or father had voted…even if they could not pay the poll tax or pass the literacy test.", ans:"Grandfather Clause"},
+      {n:4, def:"Jim Crow voting law in the south. Goal was to keep African Americans from voting by making them pay a tax they could not afford to vote.", ans:"Poll Tax"},
+      {n:5, def:"Jim Crow voting law in the south. Goal was to keep African Americans from voting by making them pass a reading test before voting.", ans:"Literacy Test"},
+      {n:6, def:"Early Civil Rights activist who brought attention to the issue of lynching through investigative journalism.", ans:"Ida B. Wells"},
+      {n:7, def:"Early Civil Rights activist who believed African Americans should gain rights over time after gaining an education and becoming an important part of the economy. Gave the opinion in the so-called Atlanta Compromise speech in 1895.", ans:"Booker T. Washington"},
+      {n:8, def:"Black leader who believed African Americans should gain rights immediately. Was a founding member of the NAACP.", ans:"W.E.B. DuBois"},
+      {n:9, def:"Not having the right to vote or being kept from voting. (African Americans and women)", ans:"Disenfranchisement"},
+      {n:10, def:"Post-Civil War labor system in which farmers cultivated a plot of land they did not own. Proceeds from the crop were split with the landowner. Led most to poverty.", ans:"Sharecropping/Tenant Farming"},
+      {n:11, def:"Added after the Civil War, it made all former slaves citizens and gave them equal protection and equal rights under the law.", ans:"14th Amendment"}
+    ]
+  },
+  {
+    name: "Moving West",
+    items: [
+      {n:12, def:"Lands west of the Mississippi River on which many Native Americans were forced to live during the 1800s. By grouping them together, the government hoped to force Natives to adopt Christianity and other white man's culture.", ans:"Reservation"},
+      {n:13, def:"Series of armed conflicts (1854-1890) between settlers and/or the U.S. army as a result of America expanding west and forcing Natives to abandon their land and culture.", ans:"Indian Wars"},
+      {n:14, def:"This occurs when a country or people adopt another more dominant culture either by choice or by force.", ans:"Assimilation"},
+      {n:15, def:"This 1887 law gave Native Americans a parcel of land. The idea was that Indians would produce food by farming rather than by hunting which required more land as areas were \"hunted out.\" The former tribal lands then went to settlers.", ans:"Dawes (Severalty) Act"},
+      {n:16, def:"This 1890 battle was the last major conflict between the U.S. Army and Native Americans. Over 150 Native American men, women, and children were killed and 51 injured.", ans:"Wounded Knee Massacre"},
+      {n:17, def:"Program in which the government provided loans and/or gave away millions of acres of federally owned property to railroad corporations to lay tracks across the country. Some land was used for rail routes, while the rest was sold to finance construction.", ans:"Federal Land Grants"},
+      {n:18, def:"Rail line built to connect the east and west coasts. Results in increased trade in the USA. Leads to creation of time zones.", ans:"Transcontinental Railroad"},
+      {n:19, def:"The government's right to seize private property for public use provided it pays compensation to the landowner. Example: This sometimes aided railroad construction.", ans:"Eminent Domain"},
+      {n:20, def:"Law that prevented the immigration of persons from Asia's largest country for a period of ten years. Many of this ethnic group had worked on railroads in the western U.S. and native-born Americans feared the foreign workers would take their jobs when the rail jobs ended.", ans:"Chinese Exclusion Act"}
+    ]
+  },
+  {
+    name: "Industrialization",
+    items: [
+      {n:21, def:"Term for when one company controls a specific industry; eliminates its competition.", ans:"Monopoly/Trust"},
+      {n:22, def:"He owned the Standard Oil monopoly. Used both vertical and horizontal integration.", ans:"John Rockefeller"},
+      {n:23, def:"Method used to create steel, cheaper and easier. Makes steel affordable; increases its use.", ans:"Bessemer Process"},
+      {n:24, def:"Agreements workers were forced to sign stating they would not join a union.", ans:"Yellow-Dog contract"},
+      {n:25, def:"Occurs when a company creates a monopoly by owning all the steps from raw materials, to manufacturing, to transportation, to sale of the end product.", ans:"Vertical Integration"},
+      {n:26, def:"Favoring people born in the U.S. (native born Americans) over immigrants.", ans:"nativism"},
+      {n:27, def:"Little to no government intervention (hands off) in economic activities. This is the relationship between business and the U.S. government during the Gilded Age.", ans:"Laissez-Faire Capitalism"},
+      {n:28, def:"The belief is that the strongest businesses and people come out on top. Nature decides who is successful and who isn't. Used to justify monopolistic practices; God supports it.", ans:"Social Darwinism (Survival of the Fittest)"},
+      {n:29, def:"Article written by Andrew Carnegie. Puts forth the idea of the rich giving back to those with less by funding charitable causes. Used as a justification for monopolies.", ans:"Gospel of Wealth"},
+      {n:30, def:"Inventor of the telephone. Use of new technology helps the American economy.", ans:"Alexander Graham Bell"},
+      {n:31, def:"Invents light bulb and electrical power stations; revolutionizes the world.", ans:"Thomas Edison"},
+      {n:32, def:"Led by Terrence Powderly, it was the world's largest labor organization. But with a diverse membership (blacks, women, unskilled) and emphasis on broad topics such as a.) getting rid of child labor, and b.) outlawing monopolies, it ultimately failed.", ans:"Knights of Labor"},
+      {n:33, def:"Successful labor union that focused on basic rights of workers such as a.) better pay, b.) safer working conditions, and c.) better hours. Led by Samuel Gompers. Still exists.", ans:"American Federation of Labor"},
+      {n:34, def:"Union leader and head of the Socialist Party. Ran for president five times.", ans:"Eugene V. Debs"},
+      {n:35, def:"A way of organizing a society in which major industries are owned and controlled by the government rather than by individual people and companies.", ans:"Socialism"},
+      {n:36, def:"Owner of the monopoly that would become U.S. Steel. Gave 90% of fortune to charity.", ans:"Andrew Carnegie"},
+      {n:37, def:"Founder of many railroads…especially in the northeast. Very wealthy.", ans:"Cornelius Vanderbilt"},
+      {n:38, def:"Banker who financed and/or oversaw some of the nation's largest corporate mergers including electric and steel corporations.", ans:"J.P. Morgan"},
+      {n:39, def:"Occurs when a company creates a monopoly by controlling one phase in the production or selling of a good. For example, Rockefeller controlling the oil business at the refinery level.", ans:"Horizontal Integration"}
+    ]
+  },
+  {
+    name: "Urbanization",
+    items: [
+      {n:40, def:"The term is used when people start moving from farms (rural areas) to cities to work in industrial jobs.", ans:"Urbanization"},
+      {n:41, def:"An area with a much higher concentration of a particular race or cultural group that is not the dominant group among the general population. Immigrants often move to these areas where others are like them and share their culture.", ans:"Ethnic Neighborhood"},
+      {n:42, def:"Very inexpensively built apartments during the Gilded Age. Very dangerous, small, and unsanitary. Families often lived in one or two rooms with no windows.", ans:"Tenements"},
+      {n:43, def:"Over 400 were created in major cities with the goal of helping immigrants find jobs, housing, and learn English. Jane Addams's Hull House in Chicago was the most famous. (Funded by private citizens because there was no government welfare then.)", ans:"Settlement House"},
+      {n:44, def:"Members of this group believed it was the Christian responsibility of persons with money to help those affected by economic inequality, poverty, alcoholism, crime, racial tensions, slum life, child labor, and poor schools.", ans:"Social Gospel Movement"},
+      {n:45, def:"Immigration inspection station on the east coast (New York City). Became a symbol of new opportunities in America.", ans:"Ellis Island"},
+      {n:46, def:"Supported prohibition (making alcohol illegal). Its effort resulted in the 18th amendment passed during the Progressive Era. Often protested outside bars and taverns. One of its members, Cary Nation, went to saloons and busted beer kegs and bottles.", ans:"Anti-Saloon League"},
+      {n:47, def:"This group used Christianity to push the agenda of prohibition. Many members were the wives, mothers, or daughters of men who drank too much and abused their families.", ans:"Women's Christian Temperance Union (WCTU)"}
+    ]
+  },
+  {
+    name: "Gilded Age Politics",
+    items: [
+      {n:48, def:"Political organizations during the Gilded Age. They gave immigrants jobs and housing in exchange for their votes. Corrupt! Goal is for the politicians and bosses to get rich, not govern.", ans:"political machine"},
+      {n:49, def:"Leader of a political machine. Controls votes and picks who will run for office. Very corrupt. Example: William Tweed/Tammany Hall NYC.", ans:"Party Boss"},
+      {n:50, def:"Tax on imports. Goal is to protect American business from cheap, foreign-made products.", ans:"Tariff"},
+      {n:51, def:"Also called the peoples' party, it was mostly made up of poor farmers. Its platform called for an end to national banks, graduated income tax, direct election of U.S. Senators, civil service reform, 8-hr work day, government control of important industries and bimetallism / free silver.", ans:"Populist Party (Omaha Platform)"},
+      {n:52, def:"Populist goal to increase the money supply by switching the U.S. off the gold standard. Wanted to base money in circulation off both gold and silver. Critics disliked the plan because an increase in money supply would cause inflation. Farmers believed a little inflation was good.", ans:"Bimetallism (Free Silver)"},
+      {n:53, def:"Basing money off the amount of gold the U.S. has in reserve. Keeps inflation down, but limits the amount of money in circulation because banks have less money to loan.", ans:"Gold Standard"},
+      {n:54, def:"Leader of the Populist party. Ran for president twice and lost. Gave Cross of Gold Speech.", ans:"William Jennings Bryan"},
+      {n:55, def:"Given in support of taking America off the gold standard. Believed the gold standard kept workers poor and made industrialists/monopolists rich at the expense of workers.", ans:"Cross of Gold Speech"},
+      {n:56, def:"Group formed to fight the monopolistic practices of railroads and grain elevators. They fought successfully for states to pass laws to regulate rail and storage facilities.", ans:"Grange Movement"},
+      {n:57, def:"Federal law which required railroad rates to be \"reasonable and just.\" However, it did not empower the government to fix specific rates.", ans:"Interstate Commerce Act"},
+      {n:58, def:"Farmer's rights movement created after the Grange Movement. Goal was to improve the economic standing of farmers through regulation and increase in money supply. Made up of white and black farmers. Leads to the creation of the Populist Party.", ans:"Farmers' Alliance"},
+      {n:59, def:"Women's rights organization. Its goal was to get women the right to vote. Lead by Susan B. Anthony, Carrie Chapman Catt, and Anna Howard Shaw.", ans:"National American Woman Suffrage Association"},
+      {n:60, def:"Supreme Court case that ruled states could not regulate railroads. The decision stated that transportation across state lines could only be regulated by the federal government.", ans:"Wabash v. Illinois"},
+      {n:61, def:"A stock market collapse led to 20% unemployment, soup kitchens, and hobos. However, President Cleveland took a \"hands off\" approach to the crisis and let it run its course.", ans:"Panic of 1893"},
+      {n:62, def:"Federal law making trusts/monopolies that limit competition illegal. Increases the power of the federal government and attempts to take power away from monopolies.", ans:"Sherman Antitrust Act"},
+      {n:63, def:"Federal law/regulation requiring government jobs be given on merit. Goal was to end corruption, graft, and make the government work better; and power of political machines.", ans:"Pendleton Civil Service Act"}
+    ]
+  }
+];
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+// Flatten all sections into one big list of 63 terms, no section grouping.
+const ALL_ITEMS = DATA.flatMap(section => section.items.map(it => ({ def: it.def, ans: it.ans })));
+
+let selectedChip = null; // {term, chipEl}
+const SECTION = 0; // single shared bank/list, kept as a constant "section" id for reuse of drag data
+
+function buildSections(){
+  const bank = document.getElementById('bank-0');
+  const itemsEl = document.getElementById('items');
+  bank.innerHTML = '';
+  itemsEl.innerHTML = '';
+
+  // Randomize the word bank order
+  const terms = shuffle(ALL_ITEMS.map(it => it.ans));
+  terms.forEach(term => {
+    bank.appendChild(makeChip(term));
+  });
+
+  // Randomize the order definitions appear in
+  const shuffledItems = shuffle(ALL_ITEMS);
+  shuffledItems.forEach((item, idx) => {
+    const row = document.createElement('div');
+    row.className = 'item';
+
+    const num = document.createElement('div');
+    num.className = 'num';
+    num.textContent = (idx + 1) + '.';
+
+    const def = document.createElement('div');
+    def.className = 'def';
+    def.textContent = item.def;
+
+    const slot = document.createElement('div');
+    slot.className = 'slot';
+    slot.id = `slot-${idx}`;
+    slot.dataset.section = SECTION;
+    slot.dataset.answer = item.ans;
+    slot.innerHTML = `<span class="hint">drop term here</span>`;
+    slot.tabIndex = 0;
+
+    slot.addEventListener('dragover', e => { e.preventDefault(); slot.classList.add('dragover'); });
+    slot.addEventListener('dragleave', () => slot.classList.remove('dragover'));
+    slot.addEventListener('drop', e => {
+      e.preventDefault();
+      slot.classList.remove('dragover');
+      const term = e.dataTransfer.getData('text/plain');
+      placeInSlot(slot, term);
+    });
+    slot.addEventListener('click', () => {
+      if (slot.classList.contains('filled')) {
+        returnToBank(slot);
+      } else if (selectedChip) {
+        placeInSlot(slot, selectedChip.term, selectedChip.chipEl);
+      }
+    });
+
+    row.appendChild(num);
+    row.appendChild(def);
+    row.appendChild(slot);
+    itemsEl.appendChild(row);
+  });
+}
+
+function makeChip(term){
+  const chip = document.createElement('div');
+  chip.className = 'chip';
+  chip.textContent = term;
+  chip.draggable = true;
+  chip.dataset.term = term;
+  chip.tabIndex = 0;
+
+  chip.addEventListener('dragstart', e => {
+    chip.classList.add('dragging');
+    e.dataTransfer.setData('text/plain', term);
+  });
+  chip.addEventListener('dragend', () => chip.classList.remove('dragging'));
+
+  chip.addEventListener('click', () => {
+    if (selectedChip && selectedChip.chipEl === chip) {
+      chip.classList.remove('selected');
+      selectedChip = null;
+      return;
+    }
+    if (selectedChip) selectedChip.chipEl.classList.remove('selected');
+    chip.classList.add('selected');
+    selectedChip = { term, chipEl: chip };
+  });
+
+  return chip;
+}
+
+function placeInSlot(slot, term, chipEl){
+  // if slot already filled, return its current chip to bank first
+  if (slot.classList.contains('filled')) {
+    returnToBank(slot);
+  }
+  // find the chip element if not passed
+  if (!chipEl) {
+    const bank = document.getElementById('bank-0');
+    chipEl = Array.from(bank.children).find(c => c.dataset.term === term && !c.classList.contains('placed'));
+  }
+  if (chipEl) chipEl.classList.add('placed');
+  if (selectedChip && selectedChip.chipEl === chipEl) {
+    selectedChip.chipEl.classList.remove('selected');
+    selectedChip = null;
+  }
+  slot.textContent = term;
+  slot.classList.add('filled');
+  slot.classList.remove('correct','incorrect');
+  slot.dataset.placed = term;
+  slot.dataset.chipRef = chipEl ? chipEl.dataset.term : term;
+}
+
+function returnToBank(slot){
+  const term = slot.dataset.placed;
+  if (term) {
+    const bank = document.getElementById('bank-0');
+    const chipEl = Array.from(bank.children).find(c => c.dataset.term === term && c.classList.contains('placed'));
+    if (chipEl) chipEl.classList.remove('placed');
+  }
+  slot.textContent = '';
+  slot.innerHTML = `<span class="hint">drop term here</span>`;
+  slot.classList.remove('filled','correct','incorrect');
+  delete slot.dataset.placed;
+}
+
+function checkAnswers(){
+  const slots = document.querySelectorAll('.slot');
+  let correct = 0, filled = 0;
+  slots.forEach(slot => {
+    if (slot.classList.contains('filled')) {
+      filled++;
+      const isRight = slot.dataset.placed === slot.dataset.answer;
+      slot.classList.toggle('correct', isRight);
+      slot.classList.toggle('incorrect', !isRight);
+      if (isRight) correct++;
+      else {
+        const key = document.createElement('span');
+        key.className = 'answer-key';
+        key.textContent = `Answer: ${slot.dataset.answer}`;
+        // avoid duplicate key spans
+        const existing = slot.querySelector('.answer-key');
+        if (existing) existing.remove();
+        slot.appendChild(key);
+      }
+    }
+  });
+  const badge = document.getElementById('scoreBadge');
+  badge.innerHTML = `<strong>${correct} / 63</strong> correct &nbsp;(${filled} answered)`;
+}
+
+function resetAll(){
+  buildSections();
+  document.getElementById('scoreBadge').textContent = '';
+  selectedChip = null;
+  resetTimer();
+}
+
+document.getElementById('checkBtn').addEventListener('click', checkAnswers);
+document.getElementById('resetBtn').addEventListener('click', resetAll);
+
+// Timer
+const TOTAL_SECONDS = 25 * 60;
+let secondsLeft = TOTAL_SECONDS;
+let timerInterval = null;
+const timerDisplay = document.getElementById('timerDisplay');
+const startBtn = document.getElementById('startBtn');
+
+function formatTime(s){
+  const m = Math.floor(s / 60);
+  const sec = s % 60;
+  return `${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+}
+
+function updateTimerDisplay(){
+  timerDisplay.textContent = formatTime(secondsLeft);
+  timerDisplay.classList.toggle('warn', secondsLeft <= 60);
+}
+
+function startTimer(){
+  if (timerInterval) return;
+  startBtn.disabled = true;
+  timerInterval = setInterval(() => {
+    secondsLeft--;
+    updateTimerDisplay();
+    if (secondsLeft <= 0) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      startBtn.disabled = false;
+      timerDisplay.textContent = "Time's up!";
+    }
+  }, 1000);
+}
+
+function resetTimer(){
+  clearInterval(timerInterval);
+  timerInterval = null;
+  secondsLeft = TOTAL_SECONDS;
+  startBtn.disabled = false;
+  updateTimerDisplay();
+}
+
+startBtn.addEventListener('click', startTimer);
+
+// init
+buildSections();
+updateTimerDisplay();
+</script>
+</body>
+</html>

@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gilded Age — Review Ledger</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Special+Elite&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #f1e6cd;
+    --paper-dark: #e7d8b4;
+    --ink: #2b2116;
+    --ink-soft: #55452f;
+    --brass: #a97c1f;
+    --brass-deep: #7c5a13;
+    --green: #3f5d3a;
+    --green-bg: #dbe7d1;
+    --red: #8f3a2e;
+    --red-bg: #f0d9d2;
+    --rule: #c9b587;
+  }
+  *{ box-sizing: border-box; }
+  html,body{
+    margin:0; padding:0;
+    background:
+      radial-gradient(ellipse at top left, rgba(169,124,31,0.08), transparent 60%),
+      var(--paper);
+    color: var(--ink);
+    font-family: 'Lora', serif;
+    min-height:100vh;
+  }
+  body::before{
+    content:"";
+    position: fixed; inset:0;
+    background-image:
+      repeating-linear-gradient(transparent, transparent 27px, rgba(120,90,30,0.06) 28px);
+    pointer-events:none;
+    z-index:0;
+  }
+  .wrap{ max-width: 760px; margin:0 auto; padding: 28px 20px 80px; position:relative; z-index:1; }
+
+  header.masthead{
+    text-align:center;
+    border-bottom: 4px double var(--brass-deep);
+    padding-bottom: 18px;
+    margin-bottom: 22px;
+  }
+  header.masthead .eyebrow{
+    font-family:'Special Elite', monospace;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-size: 12px;
+    color: var(--brass-deep);
+  }
+  header.masthead h1{
+    font-family:'Playfair Display', serif;
+    font-weight: 800;
+    font-size: clamp(28px, 5vw, 44px);
+    margin: 6px 0 4px;
+    letter-spacing: 0.5px;
+  }
+  header.masthead .sub{
+    font-style: italic;
+    color: var(--ink-soft);
+    font-size: 15px;
+  }
+
+  /* progress deck */
+  .deck{
+    background: var(--paper-dark);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 22px;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.25);
+  }
+  .deck-row{
+    display:flex; justify-content:space-between; align-items:center;
+    flex-wrap:wrap; gap:8px;
+    font-family:'Special Elite', monospace;
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-bottom: 10px;
+  }
+  .deck-row strong{ color: var(--ink); }
+  .bar-track{
+    width:100%; height: 14px;
+    background: #fffdf6;
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    overflow:hidden;
+  }
+  .bar-fill{
+    height:100%;
+    background: linear-gradient(90deg, var(--brass), var(--green));
+    width:0%;
+    transition: width 0.35s ease;
+  }
+
+  .card{
+    background: rgba(255,252,242,0.7);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 26px 24px 22px;
+    margin-bottom: 20px;
+  }
+  .card .tag{
+    font-family:'Special Elite', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--brass-deep);
+    margin-bottom: 10px;
+  }
+  .prompt{
+    font-size: 17px;
+    line-height: 1.55;
+    margin-bottom: 22px;
+  }
+  .options{
+    display:flex; flex-direction:column; gap:10px;
+  }
+  .opt{
+    font-family:'Lora', serif;
+    font-size: 15px;
+    text-align:left;
+    background: #fffdf6;
+    border: 2px solid var(--rule);
+    color: var(--ink);
+    padding: 12px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color 0.12s, background 0.12s, transform 0.06s;
+  }
+  .opt:hover:not(:disabled){ border-color: var(--brass); background: var(--paper-dark); }
+  .opt:active:not(:disabled){ transform: translateY(1px); }
+  .opt:disabled{ cursor:default; }
+  .opt.correct{ background: var(--green-bg); border-color: var(--green); color: var(--green); font-weight:600; }
+  .opt.incorrect{ background: var(--red-bg); border-color: var(--red); color: var(--red); }
+  .opt.reveal{ background: var(--green-bg); border-color: var(--green); color: var(--green); font-weight:600; }
+
+  .feedback{
+    margin-top: 16px;
+    font-size: 14px;
+    font-style: italic;
+    color: var(--ink-soft);
+    min-height: 20px;
+  }
+
+  .actions{ display:flex; justify-content:flex-end; margin-top: 18px; }
+  button.next{
+    font-family:'Lora', serif;
+    font-weight: 600;
+    font-size: 14px;
+    border: 1px solid var(--brass-deep);
+    background: var(--brass);
+    color: #fff9ec;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+    opacity:0;
+    pointer-events:none;
+  }
+  button.next.show{ opacity:1; pointer-events:auto; }
+  button.next:hover{ background: var(--brass-deep); }
+
+  .center-panel{
+    text-align:center;
+    background: rgba(255,252,242,0.7);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 34px 24px;
+  }
+  .center-panel h2{
+    font-family:'Playfair Display', serif;
+    font-size: 26px;
+    margin: 0 0 10px;
+  }
+  .center-panel p{ color: var(--ink-soft); font-size: 15px; margin: 6px 0 20px; }
+  .center-panel button{
+    font-family:'Lora', serif;
+    font-weight: 600;
+    font-size: 15px;
+    border: 1px solid var(--brass-deep);
+    background: var(--brass);
+    color: #fff9ec;
+    padding: 11px 22px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin: 0 6px;
+  }
+  .center-panel button:hover{ background: var(--brass-deep); }
+  .center-panel button.secondary{
+    background: transparent; color: var(--ink); border-color: var(--ink-soft);
+  }
+  .center-panel button.secondary:hover{ background: rgba(0,0,0,0.06); }
+
+  .missed-list{
+    text-align:left;
+    max-width: 480px;
+    margin: 0 auto 18px;
+    font-size: 13px;
+    color: var(--ink-soft);
+    max-height: 180px;
+    overflow-y:auto;
+    border: 1px dashed var(--rule);
+    border-radius: 8px;
+    padding: 10px 14px;
+  }
+  .missed-list div{ padding: 3px 0; border-bottom: 1px solid var(--rule); }
+  .missed-list div:last-child{ border-bottom:none; }
+
+  footer.note{
+    text-align:center;
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-top: 16px;
+    font-style: italic;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="masthead">
+    <div class="eyebrow">U.S. History · Unit 1</div>
+    <h1>The Gilded Age Ledger</h1>
+    <div class="sub">Multiple choice. Answer each term correctly twice to master it — missed terms come back around for review.</div>
+  </header>
+
+  <div class="deck">
+    <div class="deck-row">
+      <span>Mastered: <strong id="masteredCount">0</strong> / <span id="totalCount">63</span></span>
+      <span>This round: <strong id="roundLabel">Round 1</strong></span>
+    </div>
+    <div class="bar-track"><div class="bar-fill" id="barFill"></div></div>
+  </div>
+
+  <div id="quizArea"></div>
+
+  <footer class="note">Each term needs two correct answers (not necessarily in a row — a miss resets its progress) before it's considered mastered.</footer>
+</div>
+
+<script>
+const DATA = [
+  {n:1, def:"Supreme court case legalizing segregation (1896). Concluded separate but equal did not violate the 14th amendment. Legalized Jim Crow laws in the South.", ans:"Plessy v. Ferguson"},
+  {n:2, def:"Segregation ordinances in the South requiring people to be separate by race (restrooms, theaters, restaurants, etc.)", ans:"Jim Crow Laws"},
+  {n:3, def:"Allowed citizens to vote whose grandfather or father had voted…even if they could not pay the poll tax or pass the literacy test.", ans:"Grandfather Clause"},
+  {n:4, def:"Jim Crow voting law in the south. Goal was to keep African Americans from voting by making them pay a tax they could not afford to vote.", ans:"Poll Tax"},
+  {n:5, def:"Jim Crow voting law in the south. Goal was to keep African Americans from voting by making them pass a reading test before voting.", ans:"Literacy Test"},
+  {n:6, def:"Early Civil Rights activist who brought attention to the issue of lynching through investigative journalism.", ans:"Ida B. Wells"},
+  {n:7, def:"Early Civil Rights activist who believed African Americans should gain rights over time after gaining an education and becoming an important part of the economy. Gave the opinion in the so-called Atlanta Compromise speech in 1895.", ans:"Booker T. Washington"},
+  {n:8, def:"Black leader who believed African Americans should gain rights immediately. Was a founding member of the NAACP.", ans:"W.E.B. DuBois"},
+  {n:9, def:"Not having the right to vote or being kept from voting. (African Americans and women)", ans:"Disenfranchisement"},
+  {n:10, def:"Post-Civil War labor system in which farmers cultivated a plot of land they did not own. Proceeds from the crop were split with the landowner. Led most to poverty.", ans:"Sharecropping/Tenant Farming"},
+  {n:11, def:"Added after the Civil War, it made all former slaves citizens and gave them equal protection and equal rights under the law.", ans:"14th Amendment"},
+  {n:12, def:"Lands west of the Mississippi River on which many Native Americans were forced to live during the 1800s. By grouping them together, the government hoped to force Natives to adopt Christianity and other white man's culture.", ans:"Reservation"},
+  {n:13, def:"Series of armed conflicts (1854-1890) between settlers and/or the U.S. army as a result of America expanding west and forcing Natives to abandon their land and culture.", ans:"Indian Wars"},
+  {n:14, def:"This occurs when a country or people adopt another more dominant culture either by choice or by force.", ans:"Assimilation"},
+  {n:15, def:"This 1887 law gave Native Americans a parcel of land. The idea was that Indians would produce food by farming rather than by hunting which required more land as areas were \"hunted out.\" The former tribal lands then went to settlers.", ans:"Dawes (Severalty) Act"},
+  {n:16, def:"This 1890 battle was the last major conflict between the U.S. Army and Native Americans. Over 150 Native American men, women, and children were killed and 51 injured.", ans:"Wounded Knee Massacre"},
+  {n:17, def:"Program in which the government provided loans and/or gave away millions of acres of federally owned property to railroad corporations to lay tracks across the country. Some land was used for rail routes, while the rest was sold to finance construction.", ans:"Federal Land Grants"},
+  {n:18, def:"Rail line built to connect the east and west coasts. Results in increased trade in the USA. Leads to creation of time zones.", ans:"Transcontinental Railroad"},
+  {n:19, def:"The government's right to seize private property for public use provided it pays compensation to the landowner. Example: This sometimes aided railroad construction.", ans:"Eminent Domain"},
+  {n:20, def:"Law that prevented the immigration of persons from Asia's largest country for a period of ten years. Many of this ethnic group had worked on railroads in the western U.S. and native-born Americans feared the foreign workers would take their jobs when the rail jobs ended.", ans:"Chinese Exclusion Act"},
+  {n:21, def:"Term for when one company controls a specific industry; eliminates its competition.", ans:"Monopoly/Trust"},
+  {n:22, def:"He owned the Standard Oil monopoly. Used both vertical and horizontal integration.", ans:"John Rockefeller"},
+  {n:23, def:"Method used to create steel, cheaper and easier. Makes steel affordable; increases its use.", ans:"Bessemer Process"},
+  {n:24, def:"Agreements workers were forced to sign stating they would not join a union.", ans:"Yellow-Dog contract"},
+  {n:25, def:"Occurs when a company creates a monopoly by owning all the steps from raw materials, to manufacturing, to transportation, to sale of the end product.", ans:"Vertical Integration"},
+  {n:26, def:"Favoring people born in the U.S. (native born Americans) over immigrants.", ans:"Nativism"},
+  {n:27, def:"Little to no government intervention (hands off) in economic activities. This is the relationship between business and the U.S. government during the Gilded Age.", ans:"Laissez-Faire Capitalism"},
+  {n:28, def:"The belief is that the strongest businesses and people come out on top. Nature decides who is successful and who isn't. Used to justify monopolistic practices; God supports it.", ans:"Social Darwinism (Survival of the Fittest)"},
+  {n:29, def:"Article written by Andrew Carnegie. Puts forth the idea of the rich giving back to those with less by funding charitable causes. Used as a justification for monopolies.", ans:"Gospel of Wealth"},
+  {n:30, def:"Inventor of the telephone. Use of new technology helps the American economy.", ans:"Alexander Graham Bell"},
+  {n:31, def:"Invents light bulb and electrical power stations; revolutionizes the world.", ans:"Thomas Edison"},
+  {n:32, def:"Led by Terrence Powderly, it was the world's largest labor organization. But with a diverse membership (blacks, women, unskilled) and emphasis on broad topics such as a.) getting rid of child labor, and b.) outlawing monopolies, it ultimately failed.", ans:"Knights of Labor"},
+  {n:33, def:"Successful labor union that focused on basic rights of workers such as a.) better pay, b.) safer working conditions, and c.) better hours. Led by Samuel Gompers. Still exists.", ans:"American Federation of Labor"},
+  {n:34, def:"Union leader and head of the Socialist Party. Ran for president five times.", ans:"Eugene V. Debs"},
+  {n:35, def:"A way of organizing a society in which major industries are owned and controlled by the government rather than by individual people and companies.", ans:"Socialism"},
+  {n:36, def:"Owner of the monopoly that would become U.S. Steel. Gave 90% of fortune to charity.", ans:"Andrew Carnegie"},
+  {n:37, def:"Founder of many railroads…especially in the northeast. Very wealthy.", ans:"Cornelius Vanderbilt"},
+  {n:38, def:"Banker who financed and/or oversaw some of the nation's largest corporate mergers including electric and steel corporations.", ans:"J.P. Morgan"},
+  {n:39, def:"Occurs when a company creates a monopoly by controlling one phase in the production or selling of a good. For example, Rockefeller controlling the oil business at the refinery level.", ans:"Horizontal Integration"},
+  {n:40, def:"The term is used when people start moving from farms (rural areas) to cities to work in industrial jobs.", ans:"Urbanization"},
+  {n:41, def:"An area with a much higher concentration of a particular race or cultural group that is not the dominant group among the general population. Immigrants often move to these areas where others are like them and share their culture.", ans:"Ethnic Neighborhood"},
+  {n:42, def:"Very inexpensively built apartments during the Gilded Age. Very dangerous, small, and unsanitary. Families often lived in one or two rooms with no windows.", ans:"Tenements"},
+  {n:43, def:"Over 400 were created in major cities with the goal of helping immigrants find jobs, housing, and learn English. Jane Addams's Hull House in Chicago was the most famous. (Funded by private citizens because there was no government welfare then.)", ans:"Settlement House"},
+  {n:44, def:"Members of this group believed it was the Christian responsibility of persons with money to help those affected by economic inequality, poverty, alcoholism, crime, racial tensions, slum life, child labor, and poor schools.", ans:"Social Gospel Movement"},
+  {n:45, def:"Immigration inspection station on the east coast (New York City). Became a symbol of new opportunities in America.", ans:"Ellis Island"},
+  {n:46, def:"Supported prohibition (making alcohol illegal). Its effort resulted in the 18th amendment passed during the Progressive Era. Often protested outside bars and taverns. One of its members, Cary Nation, went to saloons and busted beer kegs and bottles.", ans:"Anti-Saloon League"},
+  {n:47, def:"This group used Christianity to push the agenda of prohibition. Many members were the wives, mothers, or daughters of men who drank too much and abused their families.", ans:"Women's Christian Temperance Union (WCTU)"},
+  {n:48, def:"Political organizations during the Gilded Age. They gave immigrants jobs and housing in exchange for their votes. Corrupt! Goal is for the politicians and bosses to get rich, not govern.", ans:"Political Machine"},
+  {n:49, def:"Leader of a political machine. Controls votes and picks who will run for office. Very corrupt. Example: William Tweed/Tammany Hall NYC.", ans:"Party Boss"},
+  {n:50, def:"Tax on imports. Goal is to protect American business from cheap, foreign-made products.", ans:"Tariff"},
+  {n:51, def:"Also called the peoples' party, it was mostly made up of poor farmers. Its platform called for an end to national banks, graduated income tax, direct election of U.S. Senators, civil service reform, 8-hr work day, government control of important industries and bimetallism / free silver.", ans:"Populist Party (Omaha Platform)"},
+  {n:52, def:"Populist goal to increase the money supply by switching the U.S. off the gold standard. Wanted to base money in circulation off both gold and silver. Critics disliked the plan because an increase in money supply would cause inflation. Farmers believed a little inflation was good.", ans:"Bimetallism (Free Silver)"},
+  {n:53, def:"Basing money off the amount of gold the U.S. has in reserve. Keeps inflation down, but limits the amount of money in circulation because banks have less money to loan.", ans:"Gold Standard"},
+  {n:54, def:"Leader of the Populist party. Ran for president twice and lost. Gave Cross of Gold Speech.", ans:"William Jennings Bryan"},
+  {n:55, def:"Given in support of taking America off the gold standard. Believed the gold standard kept workers poor and made industrialists/monopolists rich at the expense of workers.", ans:"Cross of Gold Speech"},
+  {n:56, def:"Group formed to fight the monopolistic practices of railroads and grain elevators. They fought successfully for states to pass laws to regulate rail and storage facilities.", ans:"Grange Movement"},
+  {n:57, def:"Federal law which required railroad rates to be \"reasonable and just.\" However, it did not empower the government to fix specific rates.", ans:"Interstate Commerce Act"},
+  {n:58, def:"Farmer's rights movement created after the Grange Movement. Goal was to improve the economic standing of farmers through regulation and increase in money supply. Made up of white and black farmers. Leads to the creation of the Populist Party.", ans:"Farmers' Alliance"},
+  {n:59, def:"Women's rights organization. Its goal was to get women the right to vote. Lead by Susan B. Anthony, Carrie Chapman Catt, and Anna Howard Shaw.", ans:"National American Woman Suffrage Association"},
+  {n:60, def:"Supreme Court case that ruled states could not regulate railroads. The decision stated that transportation across state lines could only be regulated by the federal government.", ans:"Wabash v. Illinois"},
+  {n:61, def:"A stock market collapse led to 20% unemployment, soup kitchens, and hobos. However, President Cleveland took a \"hands off\" approach to the crisis and let it run its course.", ans:"Panic of 1893"},
+  {n:62, def:"Federal law making trusts/monopolies that limit competition illegal. Increases the power of the federal government and attempts to take power away from monopolies.", ans:"Sherman Antitrust Act"},
+  {n:63, def:"Federal law/regulation requiring government jobs be given on merit. Goal was to end corruption, graft, and make the government work better; and power of political machines.", ans:"Pendleton Civil Service Act"}
+];
+
+const ALL_ANSWERS = DATA.map(d => d.ans);
+const MASTERY_TARGET = 2;
+
+let mastery = {};       // n -> correct-in-a-row-ish count (resets to 0 on miss)
+let missedTotals = {};  // n -> total number of times ever missed (for review summary)
+DATA.forEach(d => { mastery[d.n] = 0; missedTotals[d.n] = 0; });
+
+let roundQueue = [];
+let roundIndex = 0;
+let roundNumber = 1;
+let roundMissedThisPass = [];
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+function buildOptions(correctAns){
+  const distractors = shuffle(ALL_ANSWERS.filter(a => a !== correctAns)).slice(0, 3);
+  return shuffle([correctAns, ...distractors]);
+}
+
+function masteredCount(){
+  return Object.values(mastery).filter(v => v >= MASTERY_TARGET).length;
+}
+
+function updateProgressBar(){
+  document.getElementById('masteredCount').textContent = masteredCount();
+  document.getElementById('totalCount').textContent = DATA.length;
+  document.getElementById('roundLabel').textContent = 'Round ' + roundNumber;
+  const pct = Math.round((masteredCount() / DATA.length) * 100);
+  document.getElementById('barFill').style.width = pct + '%';
+}
+
+function startRound(){
+  roundQueue = shuffle(DATA.filter(d => mastery[d.n] < MASTERY_TARGET));
+  roundIndex = 0;
+  roundMissedThisPass = [];
+  if (roundQueue.length === 0) {
+    showCompletion();
+    return;
+  }
+  updateProgressBar();
+  renderQuestion();
+}
+
+function renderQuestion(){
+  if (roundIndex >= roundQueue.length) {
+    showRoundSummary();
+    return;
+  }
+  const item = roundQueue[roundIndex];
+  const options = buildOptions(item.ans);
+  const area = document.getElementById('quizArea');
+  area.innerHTML = '';
+
+  const card = document.createElement('div');
+  card.className = 'card';
+
+  const tag = document.createElement('div');
+  tag.className = 'tag';
+  tag.textContent = `Term ${roundIndex + 1} of ${roundQueue.length} · progress on this term: ${mastery[item.n]}/${MASTERY_TARGET}`;
+  card.appendChild(tag);
+
+  const prompt = document.createElement('div');
+  prompt.className = 'prompt';
+  prompt.textContent = item.def;
+  card.appendChild(prompt);
+
+  const opts = document.createElement('div');
+  opts.className = 'options';
+
+  const feedback = document.createElement('div');
+  feedback.className = 'feedback';
+
+  const nextBtn = document.createElement('button');
+  nextBtn.className = 'next';
+  nextBtn.textContent = 'Next →';
+  nextBtn.addEventListener('click', () => {
+    roundIndex++;
+    renderQuestion();
+  });
+
+  options.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    btn.textContent = opt;
+    btn.addEventListener('click', () => {
+      const isCorrect = opt === item.ans;
+      Array.from(opts.children).forEach(b => b.disabled = true);
+      if (isCorrect) {
+        btn.classList.add('correct');
+        mastery[item.n] = Math.min(MASTERY_TARGET, mastery[item.n] + 1);
+        feedback.textContent = mastery[item.n] >= MASTERY_TARGET
+          ? '✓ Correct — mastered!'
+          : '✓ Correct — one more right answer to master this term.';
+      } else {
+        btn.classList.add('incorrect');
+        Array.from(opts.children).find(b => b.textContent === item.ans).classList.add('reveal');
+        mastery[item.n] = 0;
+        missedTotals[item.n]++;
+        if (!roundMissedThisPass.includes(item.n)) roundMissedThisPass.push(item.n);
+        feedback.textContent = `✗ Not quite. Correct answer: ${item.ans}`;
+      }
+      updateProgressBar();
+      nextBtn.classList.add('show');
+    });
+    opts.appendChild(btn);
+  });
+
+  card.appendChild(opts);
+  card.appendChild(feedback);
+
+  const actions = document.createElement('div');
+  actions.className = 'actions';
+  actions.appendChild(nextBtn);
+  card.appendChild(actions);
+
+  area.appendChild(card);
+}
+
+function showRoundSummary(){
+  const area = document.getElementById('quizArea');
+  const missedCount = roundMissedThisPass.length;
+  const panel = document.createElement('div');
+  panel.className = 'center-panel';
+
+  if (missedCount === 0) {
+    panel.innerHTML = `
+      <h2>Round ${roundNumber} clear!</h2>
+      <p>You answered every term in this round correctly.</p>
+    `;
+  } else {
+    const list = roundMissedThisPass
+      .map(n => DATA.find(d => d.n === n))
+      .map(item => `<div><strong>${item.ans}</strong></div>`)
+      .join('');
+    panel.innerHTML = `
+      <h2>Round ${roundNumber} complete</h2>
+      <p>${missedCount} term${missedCount === 1 ? '' : 's'} need${missedCount === 1 ? 's' : ''} another look. They'll come back around in the next round, mixed in with anything else still unmastered.</p>
+      <div class="missed-list">${list}</div>
+    `;
+  }
+
+  const btnRow = document.createElement('div');
+  const reviewBtn = document.createElement('button');
+  reviewBtn.textContent = roundQueue.some(d => mastery[d.n] < MASTERY_TARGET) || Object.values(mastery).some(v => v < MASTERY_TARGET)
+    ? 'Continue Reviewing →'
+    : 'Continue →';
+  reviewBtn.addEventListener('click', () => {
+    roundNumber++;
+    startRound();
+  });
+  btnRow.appendChild(reviewBtn);
+  panel.appendChild(btnRow);
+
+  area.innerHTML = '';
+  area.appendChild(panel);
+  updateProgressBar();
+}
+
+function showCompletion(){
+  const area = document.getElementById('quizArea');
+  const totalMisses = Object.values(missedTotals).reduce((a,b) => a+b, 0);
+  const toughest = DATA
+    .map(d => ({...d, misses: missedTotals[d.n]}))
+    .filter(d => d.misses > 0)
+    .sort((a,b) => b.misses - a.misses)
+    .slice(0, 8);
+
+  const panel = document.createElement('div');
+  panel.className = 'center-panel';
+  panel.innerHTML = `
+    <h2>All 63 terms mastered! 🎉</h2>
+    <p>You got there in ${roundNumber} round${roundNumber === 1 ? '' : 's'}, with ${totalMisses} total miss${totalMisses === 1 ? '' : 'es'} along the way.</p>
+    ${toughest.length ? `<p style="margin-bottom:6px;">Terms that gave you the most trouble:</p>
+    <div class="missed-list">${toughest.map(t => `<div><strong>${t.ans}</strong> — missed ${t.misses}×</div>`).join('')}</div>` : ''}
+  `;
+  const btnRow = document.createElement('div');
+  const restartBtn = document.createElement('button');
+  restartBtn.textContent = 'Start Over';
+  restartBtn.addEventListener('click', () => {
+    DATA.forEach(d => { mastery[d.n] = 0; missedTotals[d.n] = 0; });
+    roundNumber = 1;
+    startRound();
+  });
+  btnRow.appendChild(restartBtn);
+  panel.appendChild(btnRow);
+
+  area.innerHTML = '';
+  area.appendChild(panel);
+  updateProgressBar();
+}
+
+// init
+document.getElementById('totalCount').textContent = DATA.length;
+startRound();
+</script>
+</body>
+</html>
