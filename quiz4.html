@@ -1,9 +1,265 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Quiz 4</title></head>
-<body style="font-family:Arial,sans-serif;text-align:center;padding:60px">
-<h1>Quiz 4</h1>
-<p>Replace this file with your quiz HTML.</p>
-<p><a href="index.html">← Back to quizzes</a></p>
-</body></html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Imperialism — Review Ledger</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Special+Elite&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#f1e6cd;--paper-dark:#e7d8b4;--ink:#2b2116;--ink-soft:#55452f;--brass:#a97c1f;--brass-deep:#7c5a13;--green:#3f5d3a;--green-bg:#dbe7d1;--red:#8f3a2e;--red-bg:#f0d9d2;--rule:#c9b587}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:radial-gradient(ellipse at top left,rgba(169,124,31,.08),transparent 60%),var(--paper);color:var(--ink);font-family:'Lora',serif;min-height:100vh}
+body::before{content:"";position:fixed;inset:0;background-image:repeating-linear-gradient(transparent,transparent 27px,rgba(120,90,30,.06) 28px);pointer-events:none;z-index:0}
+.wrap{max-width:760px;margin:0 auto;padding:28px 20px 80px;position:relative;z-index:1}
+header.masthead{text-align:center;border-bottom:4px double var(--brass-deep);padding-bottom:18px;margin-bottom:22px}
+.eyebrow{font-family:'Special Elite',monospace;letter-spacing:3px;text-transform:uppercase;font-size:12px;color:var(--brass-deep)}
+h1{font-family:'Playfair Display',serif;font-weight:800;font-size:clamp(28px,5vw,44px);margin:6px 0 4px;letter-spacing:.5px}
+.sub{font-style:italic;color:var(--ink-soft);font-size:15px}
+.deck{background:var(--paper-dark);border:1px solid var(--rule);border-radius:10px;padding:14px 18px;margin-bottom:22px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.25)}
+.deck-row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;font-family:'Special Elite',monospace;font-size:13px;color:var(--ink-soft);margin-bottom:10px}
+.deck-row strong{color:var(--ink)}
+.bar-track{width:100%;height:14px;background:#fffdf6;border:1px solid var(--rule);border-radius:999px;overflow:hidden}
+.bar-fill{height:100%;background:linear-gradient(90deg,var(--brass),var(--green));width:0%;transition:width .35s ease}
+.card,.center-panel{background:rgba(255,252,242,.7);border:1px solid var(--rule);border-radius:10px}
+.card{padding:26px 24px 22px;margin-bottom:20px}
+.tag{font-family:'Special Elite',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--brass-deep);margin-bottom:10px}
+.prompt{font-size:17px;line-height:1.55;margin-bottom:22px}
+.options{display:flex;flex-direction:column;gap:10px}
+.opt{font-family:'Lora',serif;font-size:15px;text-align:left;background:#fffdf6;border:2px solid var(--rule);color:var(--ink);padding:12px 16px;border-radius:8px;cursor:pointer;transition:border-color .12s,background .12s,transform .06s}
+.opt:hover:not(:disabled){border-color:var(--brass);background:var(--paper-dark)}
+.opt:active:not(:disabled){transform:translateY(1px)}
+.opt:disabled{cursor:default}
+.opt.correct{background:var(--green-bg);border-color:var(--green);color:var(--green);font-weight:600}
+.opt.incorrect{background:var(--red-bg);border-color:var(--red);color:var(--red)}
+.opt.reveal{background:var(--green-bg);border-color:var(--green);color:var(--green);font-weight:600}
+.feedback{margin-top:16px;font-size:14px;font-style:italic;color:var(--ink-soft);min-height:20px}
+.actions{display:flex;justify-content:flex-end;margin-top:18px}
+button.next,.center-panel button{font-family:'Lora',serif;font-weight:600;font-size:14px;border:1px solid var(--brass-deep);background:var(--brass);color:#fff9ec;padding:10px 20px;border-radius:6px;cursor:pointer}
+button.next{opacity:0;pointer-events:none}
+button.next.show{opacity:1;pointer-events:auto}
+button.next:hover,.center-panel button:hover{background:var(--brass-deep)}
+.center-panel{text-align:center;padding:34px 24px}
+.center-panel h2{font-family:'Playfair Display',serif;font-size:26px;margin:0 0 10px}
+.center-panel p{color:var(--ink-soft);font-size:15px;margin:6px 0 20px}
+.center-panel button{margin:0 6px}
+.missed-list{text-align:left;max-width:480px;margin:0 auto 18px;font-size:13px;color:var(--ink-soft);max-height:180px;overflow-y:auto;border:1px dashed var(--rule);border-radius:8px;padding:10px 14px}
+.missed-list div{padding:3px 0;border-bottom:1px solid var(--rule)}
+.missed-list div:last-child{border-bottom:none}
+footer.note{text-align:center;font-size:12px;color:var(--ink-soft);margin-top:16px;font-style:italic}
+@media(max-width:640px){.wrap{padding-left:14px;padding-right:14px}.card{padding:22px 16px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="masthead">
+<div class="eyebrow">U.S. History · Imperialism</div>
+<h1>The Imperialism Ledger</h1>
+<div class="sub">Multiple choice. Answer each term correctly twice to master it — missed terms come back around for review.</div>
+</header>
+
+<div class="deck">
+<div class="deck-row">
+<span>Mastered: <strong id="masteredCount">0</strong> / <span id="totalCount">22</span></span>
+<span>This round: <strong id="roundLabel">Round 1</strong></span>
+</div>
+<div class="bar-track"><div class="bar-fill" id="barFill"></div></div>
+</div>
+
+<div id="quizArea"></div>
+<footer class="note">Each term needs two correct answers (not necessarily in a row — a miss resets its progress) before it is considered mastered.</footer>
+</div>
+
+<script>
+const DATA = [
+  {n:1, def:"Also called Seward's Folly. Bought from Russia for $7.2 million. Discovery of natural resources like gold and oil proved the purchase was wise.", ans:'Alaska Purchase (1867)'},
+  {n:2, def:'U.S. Navy officer who believed the U.S. needed to expand its Navy to increase its size and power around the world.', ans:'Alfred T. Mahan'},
+  {n:3, def:'Newspaper articles that are untruthful with the goal of selling papers. They are presently called tabloids. A leading cause of the Spanish-American War.', ans:'Yellow Journalism'},
+  {n:4, def:'Also called the “Splendid Little War.” In 1898 it lasted 3 months. America vs. Spain. America wins and becomes a world power. Takes control of Cuba for 2 years. The U.S. gains the Philippines, Guam, and Puerto Rico.', ans:'Spanish-American War'},
+  {n:5, def:'U.S. Navy ship exploded in Havana harbor. Yellow journalists and American politicians blamed Spain and used it as a reason for the Spanish-American War.', ans:'USS Maine'},
+  {n:6, def:'Republican President from 1901–09. McKinley’s Vice President. Became president after McKinley was assassinated. Considered the first modern president. Built the Panama Canal and believed in the Roosevelt Corollary. Led the Rough Riders at the Battle of San Juan Hill.', ans:'Theodore Roosevelt'},
+  {n:7, def:'Volunteer Cavalry unit led by Teddy Roosevelt during the Spanish-American War.', ans:'Rough Riders'},
+  {n:8, def:'In 1898 Hawaii became part of the United States for economic and military reasons.', ans:'Annexation of Hawaii (1898)'},
+  {n:9, def:'Became part of the U.S. empire following the Spanish-American War.', ans:'Puerto Rico'},
+  {n:10, def:'Group of Americans who did not support imperialism. They believed imperialism went against the ideals the country was founded on in the Constitution.', ans:'Anti-Imperialist League'},
+  {n:11, def:'Allowed Cuba to be free from American rule following the Spanish-American War. Allowed the U.S. to intervene in Cuban affairs and gave the U.S. Guantanamo Bay military base.', ans:'Platt Amendment'},
+  {n:12, def:'A territorial area over which political or economic influence is wielded by one nation.', ans:'Sphere of Influence'},
+  {n:13, def:'U.S. policy in China calling for free trade in the country. The U.S. wanted no spheres of influence in China.', ans:'Open Door Policy'},
+  {n:14, def:'Violent anti-foreigner movement in China from 1899–1901. Many Chinese had grown tired of foreign imperialism and Christian missionaries.', ans:'Boxer Rebellion'},
+  {n:15, def:'Teddy Roosevelt’s foreign policy. The idea was to negotiate peacefully but with the threat of military force to ensure positive results.', ans:'Big Stick Policy'},
+  {n:16, def:'Built through the isthmus of Panama. Allowed quicker shipping by connecting the Pacific and Atlantic Oceans. Teddy Roosevelt negotiated its building by helping the Panamanians gain independence from Colombia.', ans:'Panama Canal'},
+  {n:17, def:'Agreement between the USA and Japan. Japan agreed to stop emigration to the U.S. of non-skilled workers. The U.S. agreed to end segregation laws aimed at the Japanese.', ans:'Gentlemen’s Agreement'},
+  {n:18, def:'Added to the Monroe Doctrine. The U.S. would intervene in conflicts between Europe and Latin America. It reflected the idea that the U.S. had become the world’s police.', ans:'Roosevelt Corollary'},
+  {n:19, def:'Foreign policy of Howard Taft. The U.S. government encouraged investment in foreign countries to increase trade.', ans:'Dollar Diplomacy'},
+  {n:20, def:'Foreign policy of Woodrow Wilson. Stated the U.S. would only support countries who had the same economic and democratic beliefs as the USA. Wanted to spread democracy and capitalism.', ans:'Moral Diplomacy'},
+  {n:21, def:'Passed after President McKinley’s Spanish-American War message. It stated the U.S. could go to war in Cuba but could not annex the island after the war.', ans:'Teller Amendment'},
+  {n:22, def:'Economic, military, and/or cultural influence of one country over other countries.', ans:'Imperialism'}
+];
+const ALL_ANSWERS = DATA.map(d => d.ans);
+const MASTERY_TARGET = 2;
+
+let mastery = {};
+let missedTotals = {};
+DATA.forEach(d => { mastery[d.n]=0; missedTotals[d.n]=0; });
+
+let roundQueue=[], roundIndex=0, roundNumber=1, roundMissedThisPass=[];
+
+function shuffle(arr) {
+ const a=arr.slice();
+ for(let i=a.length-1;i>0;i--) {
+   const j=Math.floor(Math.random()*(i+1));
+   [a[i],a[j]]=[a[j],a[i]];
+ }
+ return a;
+}
+
+function buildOptions(correctAns) {
+ const distractors=shuffle(ALL_ANSWERS.filter(a=>a!==correctAns)).slice(0,3);
+ return shuffle([correctAns,...distractors]);
+}
+
+function masteredCount() {
+ return Object.values(mastery).filter(v=>v>=MASTERY_TARGET).length;
+}
+
+function updateProgressBar() {
+ document.getElementById('masteredCount').textContent=masteredCount();
+ document.getElementById('totalCount').textContent=DATA.length;
+ document.getElementById('roundLabel').textContent='Round '+roundNumber;
+ document.getElementById('barFill').style.width=Math.round(masteredCount()/DATA.length*100)+'%';
+}
+
+function startRound() {
+ roundQueue=shuffle(DATA.filter(d=>mastery[d.n]<MASTERY_TARGET));
+ roundIndex=0;
+ roundMissedThisPass=[];
+ if(roundQueue.length===0) { showCompletion(); return; }
+ updateProgressBar();
+ renderQuestion();
+}
+
+function renderQuestion() {
+ if(roundIndex>=roundQueue.length) { showRoundSummary(); return; }
+ const item=roundQueue[roundIndex];
+ const options=buildOptions(item.ans);
+ const area=document.getElementById('quizArea');
+ area.innerHTML='';
+
+ const card=document.createElement('div');
+ card.className='card';
+
+ const tag=document.createElement('div');
+ tag.className='tag';
+ tag.textContent=`Term ${roundIndex+1} of ${roundQueue.length} · progress on this term: ${mastery[item.n]}/${MASTERY_TARGET}`;
+ card.appendChild(tag);
+
+ const prompt=document.createElement('div');
+ prompt.className='prompt';
+ prompt.textContent=item.def;
+ card.appendChild(prompt);
+
+ const opts=document.createElement('div');
+ opts.className='options';
+
+ const feedback=document.createElement('div');
+ feedback.className='feedback';
+
+ const nextBtn=document.createElement('button');
+ nextBtn.className='next';
+ nextBtn.textContent='Next →';
+ nextBtn.addEventListener('click',()=>{roundIndex++;renderQuestion();});
+
+ options.forEach(opt=>{
+   const btn=document.createElement('button');
+   btn.className='opt';
+   btn.textContent=opt;
+   btn.addEventListener('click',()=>{
+     const isCorrect=opt===item.ans;
+     Array.from(opts.children).forEach(b=>b.disabled=true);
+     if(isCorrect) {
+       btn.classList.add('correct');
+       mastery[item.n]=Math.min(MASTERY_TARGET,mastery[item.n]+1);
+       feedback.textContent=mastery[item.n]>=MASTERY_TARGET
+         ? '✓ Correct — mastered!'
+         : '✓ Correct — one more right answer to master this term.';
+     } else {
+       btn.classList.add('incorrect');
+       Array.from(opts.children).find(b=>b.textContent===item.ans).classList.add('reveal');
+       mastery[item.n]=0;
+       missedTotals[item.n]++;
+       if(!roundMissedThisPass.includes(item.n)) roundMissedThisPass.push(item.n);
+       feedback.textContent=`✗ Not quite. Correct answer: ${item.ans}`;
+     }
+     updateProgressBar();
+     nextBtn.classList.add('show');
+   });
+   opts.appendChild(btn);
+ });
+
+ card.appendChild(opts);
+ card.appendChild(feedback);
+ const actions=document.createElement('div');
+ actions.className='actions';
+ actions.appendChild(nextBtn);
+ card.appendChild(actions);
+ area.appendChild(card);
+}
+
+function showRoundSummary() {
+ const area=document.getElementById('quizArea');
+ const missedCount=roundMissedThisPass.length;
+ const panel=document.createElement('div');
+ panel.className='center-panel';
+
+ if(missedCount===0) {
+   panel.innerHTML=`<h2>Round ${roundNumber} clear!</h2><p>You answered every term in this round correctly.</p>`;
+ } else {
+   const list=roundMissedThisPass
+     .map(n=>DATA.find(d=>d.n===n))
+     .map(item=>`<div><strong>${item.ans}</strong></div>`).join('');
+   panel.innerHTML=`<h2>Round ${roundNumber} complete</h2>
+   <p>${missedCount} term${missedCount===1?'':'s'} need${missedCount===1?'s':''} another look. They'll come back around in the next round, mixed in with anything else still unmastered.</p>
+   <div class="missed-list">${list}</div>`;
+ }
+
+ const btnRow=document.createElement('div');
+ const reviewBtn=document.createElement('button');
+ reviewBtn.textContent=Object.values(mastery).some(v=>v<MASTERY_TARGET)?'Continue Reviewing →':'Continue →';
+ reviewBtn.addEventListener('click',()=>{roundNumber++;startRound();});
+ btnRow.appendChild(reviewBtn);
+ panel.appendChild(btnRow);
+ area.innerHTML='';
+ area.appendChild(panel);
+ updateProgressBar();
+}
+
+function showCompletion() {
+ const area=document.getElementById('quizArea');
+ const totalMisses=Object.values(missedTotals).reduce((a,b)=>a+b,0);
+ const toughest=DATA.map(d=>({...d,misses:missedTotals[d.n]}))
+   .filter(d=>d.misses>0)
+   .sort((a,b)=>b.misses-a.misses)
+   .slice(0,8);
+
+ const panel=document.createElement('div');
+ panel.className='center-panel';
+ const list=toughest.length
+   ? `<div class="missed-list">${toughest.map(d=>`<div><strong>${d.ans}</strong> — ${d.misses} miss${d.misses===1?'':'es'}</div>`).join('')}</div>`
+   : '';
+ panel.innerHTML=`<h2>All 22 terms mastered!</h2>
+ <p>You mastered every Imperialism term. Total missed answers: ${totalMisses}.</p>${list}
+ <button id="restart">Start Over</button>`;
+ area.innerHTML='';
+ area.appendChild(panel);
+ document.getElementById('restart').addEventListener('click',()=>{
+   DATA.forEach(d=>{mastery[d.n]=0;missedTotals[d.n]=0;});
+   roundNumber=1;startRound();
+ });
+ updateProgressBar();
+}
+
+updateProgressBar();
+startRound();
+</script>
+</body>
+</html>
