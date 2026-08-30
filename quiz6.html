@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Progressive Era Matching Quiz</title>
+<style>
+body{margin:0;background:#f1e6cd;color:#2b2116;font-family:Georgia,"Times New Roman",serif}
+.wrap{max-width:1000px;margin:auto;padding:30px 18px 60px}
+header{text-align:center;border-bottom:4px double #7c5a13;padding-bottom:18px;margin-bottom:22px}
+h1{font-size:clamp(30px,5vw,44px);margin:8px 0}
+.sub{font-style:italic;color:#55452f}
+.panel{background:#fffaf0;border:1px solid #c9b587;border-radius:10px;padding:22px}
+.stats{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;color:#55452f;margin-bottom:10px}
+.bar{height:13px;background:#fff;border:1px solid #c9b587;border-radius:20px;overflow:hidden}
+.fill{height:100%;width:0;background:#7c5a13;transition:.25s}
+.instructions{color:#55452f;line-height:1.5}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0}
+.definition{background:#fffdf6;border:2px solid #c9b587;border-radius:8px;padding:14px;line-height:1.45;font-size:14px}
+select{width:100%;height:100%;min-height:60px;background:#fffdf6;border:2px solid #c9b587;border-radius:8px;padding:10px;color:#2b2116;font:14px Georgia,"Times New Roman",serif}
+select.correct{border-color:#3f5d3a;background:#dbe7d1}
+select.wrong{border-color:#8f3a2e;background:#f0d9d2}
+.actions{text-align:center;margin-top:22px}
+button{background:#a97c1f;color:white;border:1px solid #7c5a13;border-radius:6px;padding:11px 20px;font:600 14px Georgia,serif;cursor:pointer;margin:4px}
+button:hover{background:#7c5a13}
+.feedback{text-align:center;min-height:24px;margin-top:14px;font-style:italic;color:#55452f}
+@media(max-width:700px){.row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<div>U.S. HISTORY · PROGRESSIVE ERA</div>
+<h1>Progressive Era Matching</h1>
+<div class="sub">Match each definition with the correct key term.</div>
+</header>
+
+<div class="panel">
+<div class="stats">
+<span>Correct: <b id="score">0</b> / 36</span>
+<span>Answered: <b id="answered">0</b> / 36</span>
+</div>
+<div class="bar"><div class="fill" id="fill"></div></div>
+
+<p class="instructions">
+Choose the correct term for each definition. The definitions and answer choices are randomized each time you start a new quiz.
+</p>
+
+<div id="quiz"></div>
+<div class="feedback" id="feedback"></div>
+
+<div class="actions">
+<button type="button" onclick="checkAnswers()">Check Answers</button>
+<button type="button" onclick="newQuiz()">New Quiz</button>
+</div>
+</div>
+</div>
+
+<script>
+"use strict";
+
+const DATA = [{"id": 1, "term": "Progressive Movement", "definition": "Goal was to fix the problems created in the Gilded Age. Wanted government to listen to citizens, labor reforms, and social reforms."}, {"id": 2, "term": "Scientific Management", "definition": "Progressives wanted to increase productivity and efficiency with science."}, {"id": 3, "term": "Muckrakers", "definition": "Investigative journalists who exposed the problems of the Gilded Age. They also provided solutions to the problems."}, {"id": 4, "term": "16th Amendment", "definition": "Ratified in 1913; allows Congress to impose a graduated income tax. The more you make, the more you pay."}, {"id": 5, "term": "Jacob Riis", "definition": "A muckraker who used photography and writing to expose the living and working conditions of those in poverty."}, {"id": 6, "term": "Australian (Secret) Ballot", "definition": "When voters mark their choices in private."}, {"id": 7, "term": "Direct Primary", "definition": "A Progressive reform when voters choose who will run for office, not the party or political machine."}, {"id": 8, "term": "Robert La Follette", "definition": "Progressive Governor and Senator from Wisconsin. Led Wisconsin as the first state to adopt many Progressive reforms."}, {"id": 9, "term": "17th Amendment", "definition": "Allowed the direct election of U.S. Senators."}, {"id": 10, "term": "Initiative", "definition": "Voter-driven petition to change a law."}, {"id": 11, "term": "Referendum", "definition": "A public vote on proposed legislation."}, {"id": 12, "term": "Recall", "definition": "Allows voters the opportunity to remove an elected official by having another election before their term is up."}, {"id": 13, "term": "Social Welfare", "definition": "Things that impact the good of the people. Often refers to services provided by the government for the people."}, {"id": 14, "term": "Municipal Reform", "definition": "Changing city government so it is more efficient, honest, and responsive."}, {"id": 15, "term": "Teddy Roosevelt", "definition": "Republican Progressive Era President 1901–1909. Known for trust busting, conservation, and Big Stick Policy."}, {"id": 16, "term": "Square Deal", "definition": "Teddy Roosevelt's domestic programs. Goals included conservation, regulating big business, and protecting consumers."}, {"id": 17, "term": "Trust Busting", "definition": "Teddy Roosevelt, Howard Taft, and Woodrow Wilson used the Sherman Anti-Trust Act to break up trusts/monopolies."}, {"id": 18, "term": "Elkins Act", "definition": "A federal law allowing the Interstate Commerce Commission the power to fine railroads that gave unfair rebates or discriminated with unfair pricing."}, {"id": 19, "term": "The Jungle", "definition": "Muckraking book written by Upton Sinclair. The fictional book depicts actual conditions inside meatpacking plants."}, {"id": 20, "term": "Pure Food and Drug Act (1906)", "definition": "Requires truth in labeling of goods sold in the USA."}, {"id": 21, "term": "Meat Inspection Act (1906)", "definition": "Created as a reaction to The Jungle. Required sanitary conditions in meatpacking facilities."}, {"id": 22, "term": "Conservation", "definition": "Preserving or protecting something with the goal of keeping it in its natural state."}, {"id": 23, "term": "William Howard Taft", "definition": "President Roosevelt's hand-picked successor. Republican President 1909–1913."}, {"id": 24, "term": "18th Amendment", "definition": "Ratified in 1919; prohibited commercial manufacture, sale, and consumption of alcoholic beverages."}, {"id": 25, "term": "Payne-Aldrich Tariff", "definition": "Passed during Taft's presidency. Increased tariffs, which upset members of his party."}, {"id": 26, "term": "Eugene V. Debs", "definition": "American union leader and head of the Socialist Party. Ran for President five times as a Socialist."}, {"id": 27, "term": "Bull Moose Party", "definition": "Political party started by Teddy Roosevelt for the 1912 election because he did not agree with Howard Taft's policies."}, {"id": 28, "term": "Underwood Tariff", "definition": "Lowered tariffs from 40% to 25%. Many American businesses opposed the change. Progressives approved."}, {"id": 29, "term": "Clayton Anti-Trust Act", "definition": "Federal law aimed at increasing the government's ability to regulate, prosecute, and break up trusts/monopolies."}, {"id": 30, "term": "Federal Trade Commission", "definition": "Federal agency created to protect consumers and end monopolies. Allowed for government oversight of business."}, {"id": 31, "term": "Niagara Movement", "definition": "Civil Rights organization founded by W.E.B. Du Bois. Called for immediate end to racial segregation and disenfranchisement."}, {"id": 32, "term": "NAACP", "definition": "National Association for the Advancement of Colored People started in 1909. Started to gain equal rights for all African Americans."}, {"id": 33, "term": "National Women Suffrage Association", "definition": "Women's rights movement. Goal was to get women the right to vote."}, {"id": 34, "term": "19th Amendment", "definition": "Prohibits any citizen of the U.S. from being denied the right to vote based on sex."}, {"id": 35, "term": "Federal Reserve", "definition": "Created to be independent from the government. The board controls the amount of money in circulation and interest rates on loans."}, {"id": 36, "term": "League of Women Voters", "definition": "Started by suffragist Carrie Chapman Catt as a result of women getting the right to vote. Goal was to encourage women to vote."}];
+let rows = [];
+
+function shuffle(array){
+    const result = array.slice();
+    for(let i=result.length-1;i>0;i--){
+        const j=Math.floor(Math.random()*(i+1));
+        const temp=result[i];
+        result[i]=result[j];
+        result[j]=temp;
+    }
+    return result;
+}
+
+function newQuiz(){
+    const quiz=document.getElementById("quiz");
+    quiz.innerHTML="";
+    document.getElementById("feedback").textContent="";
+
+    const definitions=shuffle(DATA);
+    const terms=shuffle(DATA);
+
+    definitions.forEach(function(item){
+        const row=document.createElement("div");
+        row.className="row";
+
+        const definition=document.createElement("div");
+        definition.className="definition";
+        definition.textContent=item.definition;
+
+        const select=document.createElement("select");
+        select.dataset.answer=String(item.id);
+
+        const blank=document.createElement("option");
+        blank.value="";
+        blank.textContent="— Select a term —";
+        select.appendChild(blank);
+
+        terms.forEach(function(term){
+            const option=document.createElement("option");
+            option.value=String(term.id);
+            option.textContent=term.term;
+            select.appendChild(option);
+        });
+
+        row.appendChild(definition);
+        row.appendChild(select);
+        quiz.appendChild(row);
+    });
+
+    update();
+}
+
+function checkAnswers(){
+    const selects=Array.from(document.querySelectorAll("select"));
+    let score=0;
+    let answered=0;
+
+    selects.forEach(function(select){
+        select.classList.remove("correct","wrong");
+
+        if(select.value!==""){
+            answered++;
+
+            if(select.value===select.dataset.answer){
+                score++;
+                select.classList.add("correct");
+            }else{
+                select.classList.add("wrong");
+            }
+        }
+    });
+
+    document.getElementById("score").textContent=score;
+    document.getElementById("answered").textContent=answered;
+    document.getElementById("fill").style.width=(answered/DATA.length*100)+"%";
+
+    const feedback=document.getElementById("feedback");
+
+    if(answered<DATA.length){
+        feedback.textContent="You answered "+answered+" of 36. Finish all of them to get your final score.";
+    }else if(score===DATA.length){
+        feedback.textContent="✓ Perfect! You matched all 36 Progressive Era terms correctly!";
+    }else{
+        feedback.textContent="You got "+score+" / 36 correct. Green = correct. Red = incorrect.";
+    }
+}
+
+function update(){
+    document.getElementById("score").textContent="0";
+    document.getElementById("answered").textContent="0";
+    document.getElementById("fill").style.width="0%";
+}
+
+newQuiz();
+</script>
+</body>
+</html>
