@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WWI Key Terms — Big Review Game</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f3f6fb;color:#172033}
+header{background:linear-gradient(135deg,#172554,#2563eb);color:white;padding:28px 18px;text-align:center}
+h1{margin:0 0 7px;font-size:clamp(27px,5vw,44px)}
+header p{margin:0;opacity:.9}
+.container{max-width:1100px;margin:auto;padding:18px}
+.tabs{display:flex;gap:8px;overflow:auto;margin:10px 0 18px}
+.tabs button{white-space:nowrap;border:0;border-radius:12px;padding:12px 16px;background:white;color:#334155;font-weight:700;cursor:pointer;box-shadow:0 2px 8px #0001}
+.tabs button.active{background:#2563eb;color:white}
+.panel{display:none} .panel.active{display:block}
+.card{background:white;border-radius:18px;padding:22px;box-shadow:0 6px 22px #00000012;margin-bottom:18px}
+.flashcard{min-height:330px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;cursor:pointer;perspective:1000px}
+.flash-inner{width:100%;min-height:290px;display:flex;align-items:center;justify-content:center;transition:.45s;transform-style:preserve-3d}
+.flash-face{position:absolute;width:min(850px,100%);min-height:270px;padding:32px;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:18px;backface-visibility:hidden;border:2px solid #dbeafe}
+.flash-front{background:#eff6ff} .flash-back{background:#f8fafc;transform:rotateY(180deg)}
+.flipped .flash-inner{transform:rotateY(180deg)}
+.bigterm{font-size:clamp(28px,6vw,52px);font-weight:800;color:#1d4ed8}
+.definition{font-size:clamp(17px,3vw,23px);line-height:1.5}
+.controls{display:flex;gap:9px;flex-wrap:wrap;justify-content:center;margin-top:14px}
+button,.choice{font:inherit}
+.action{border:0;border-radius:11px;padding:11px 16px;background:#2563eb;color:white;font-weight:750;cursor:pointer}
+.action.secondary{background:#e2e8f0;color:#172033}
+.action.good{background:#16a34a} .action.bad{background:#dc2626}
+.progress{height:10px;background:#e2e8f0;border-radius:99px;overflow:hidden;margin:10px 0 15px}
+.progress>div{height:100%;background:#2563eb;width:0%;transition:.3s}
+.question{font-size:24px;font-weight:750;line-height:1.35;margin:8px 0 18px}
+.choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px}
+.choice{border:2px solid #dbe3ef;background:white;border-radius:12px;padding:14px;text-align:left;cursor:pointer}
+.choice:hover{border-color:#93c5fd;background:#eff6ff}
+.choice.correct{background:#dcfce7;border-color:#16a34a}
+.choice.wrong{background:#fee2e2;border-color:#dc2626}
+.feedback{min-height:28px;font-weight:750;margin-top:13px}
+.match-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.match-item{padding:15px;border:2px solid #dbe3ef;border-radius:12px;background:white;cursor:pointer}
+.match-item.selected{border-color:#2563eb;background:#eff6ff}
+.match-item.matched{border-color:#16a34a;background:#dcfce7;cursor:default}
+.match-item.wrongflash{animation:shake .25s}
+@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+input[type=text]{width:100%;padding:14px;border:2px solid #dbe3ef;border-radius:12px;font-size:18px}
+.stat{display:inline-block;background:#eef2ff;border-radius:10px;padding:8px 12px;margin:3px;font-weight:700}
+.small{color:#64748b;font-size:14px}
+footer{text-align:center;color:#64748b;padding:20px}
+@media(max-width:650px){.match-grid{grid-template-columns:1fr}.flash-face{padding:22px}}
+</style>
+</head>
+<body>
+<header>
+<h1>🇺🇸 WWI Key Terms Review Game</h1>
+<p>28 terms • Front & back flashcards • Multiple choice • Matching • Type-it mode</p>
+</header>
+<div class="container">
+<div class="tabs">
+<button class="active" onclick="showTab('flash')">🃏 Flashcards</button>
+<button onclick="showTab('mc')">🎯 Multiple Choice</button>
+<button onclick="showTab('match')">🔗 Matching</button>
+<button onclick="showTab('type')">⌨️ Type It</button>
+<button onclick="showTab('study')">📚 Study List</button>
+</div>
+
+<section id="flash" class="panel active">
+<div class="card">
+<h2>Flashcards</h2>
+<p class="small">Click the card to flip it. Use the buttons to move through all 28.</p>
+<div class="progress"><div id="flashProg"></div></div>
+<div id="flashCard" class="flashcard" onclick="flipFlash()">
+<div class="flash-inner">
+<div class="flash-face flash-front"><div class="small">TERM</div><div class="bigterm" id="flashTerm"></div><p class="small">Click to reveal definition</p></div>
+<div class="flash-face flash-back"><div class="small">DEFINITION</div><div class="definition" id="flashDef"></div><p class="small">Click to flip back</p></div>
+</div></div>
+<div class="controls">
+<button class="action secondary" onclick="flashPrev()">← Previous</button>
+<button class="action" onclick="flipFlash()">Flip</button>
+<button class="action secondary" onclick="flashNext()">Next →</button>
+<button class="action" onclick="shuffleFlash()">🔀 Shuffle</button>
+</div>
+<p id="flashCount" style="text-align:center;font-weight:700"></p>
+</div>
+</section>
+
+<section id="mc" class="panel">
+<div class="card">
+<h2>Multiple Choice</h2>
+<div id="mcStats"></div>
+<div class="progress"><div id="mcProg"></div></div>
+<div class="question" id="mcQuestion"></div>
+<div class="choices" id="mcChoices"></div>
+<div class="feedback" id="mcFeedback"></div>
+<div class="controls"><button class="action" onclick="nextMC()">Next Question →</button><button class="action secondary" onclick="resetMC()">Reset</button></div>
+</div>
+</section>
+
+<section id="match" class="panel">
+<div class="card">
+<h2>Matching Challenge</h2>
+<p class="small">Match each term with its definition. The game gives you 10 pairs at a time.</p>
+<div id="matchStats"></div>
+<div class="match-grid" id="matchGrid"></div>
+<div class="controls"><button class="action" onclick="newMatch()">🔄 New Round</button></div>
+</div>
+</section>
+
+<section id="type" class="panel">
+<div class="card">
+<h2>Type It</h2>
+<p class="small">Read the definition and type the matching term. Spelling is checked loosely.</p>
+<div id="typeStats"></div>
+<div class="progress"><div id="typeProg"></div></div>
+<div class="question" id="typeQuestion"></div>
+<input id="typeInput" type="text" placeholder="Type the term here..." onkeydown="if(event.key==='Enter')checkType()">
+<div class="controls"><button class="action" onclick="checkType()">Check Answer</button><button class="action" onclick="nextType()">Next →</button><button class="action secondary" onclick="resetType()">Reset</button></div>
+<div class="feedback" id="typeFeedback"></div>
+</div>
+</section>
+
+<section id="study" class="panel">
+<div class="card">
+<h2>Complete Study List</h2>
+<p class="small">Use this for a final pass before your quiz.</p>
+<div id="studyList"></div>
+</div>
+</section>
+</div>
+<footer>Built from the 28 terms and definitions on your WWI Key Terms worksheet.</footer>
+
+<script>
+const DATA = [{"term": "Neutrality", "definition": "America's foreign policy at the start of WWI. The USA wanted to stay out of the war and did not officially support either alliance; it sold goods to both sides."}, {"term": "Lusitania", "definition": "Passenger ship sunk by the Germans as a result of unrestricted submarine warfare. 128 American civilians were killed. This helped lead to U.S. entry into WWI."}, {"term": "Sussex Pledge", "definition": "Promise made in 1916 by Germany to the USA to end unrestricted submarine warfare. The USA wanted freedom of the seas."}, {"term": "Propaganda", "definition": "Information aimed at influencing the attitude of the community toward a cause or position by presenting one side of an argument. The U.S. government used it to gain support and funding for WWI."}, {"term": "Unrestricted Submarine Warfare", "definition": "German policy of sinking ships entering the war zone without warning. It was a major reason for U.S. entry into WWI."}, {"term": "Allied Powers", "definition": "Great Britain, France, Italy, and Russia. The U.S.A. joined the war on their side in 1917. Russia later left because of its revolution."}, {"term": "Central Powers", "definition": "Alliance of Germany, Austria-Hungary, and the Ottoman Empire during WWI."}, {"term": "Zimmerman Note", "definition": "A 1917 proposition from Germany to Mexico, intercepted by the U.S.A., asking Mexico to join the Central Powers and attack the U.S.A. Mexico was promised Texas, New Mexico, and Arizona."}, {"term": "Russian Revolution", "definition": "Bolshevik/Communist revolution in Russia against the autocratic Tsarist government. It led Russia to stop fighting in WWI and eventually become the Soviet Union."}, {"term": "Civil Liberties", "definition": "Rights and freedoms protected by the First Amendment, allowing people to speak, think, assemble, organize, worship, or petition without government interference or restraint."}, {"term": "Espionage Act", "definition": "Law that prohibited interference with military operations or recruitment, and prohibited support for U.S. enemies during wartime. It was upheld in Schenck v. United States."}, {"term": "Sedition Act", "definition": "Law that made certain negative speech toward or about the government during wartime or national crisis illegal because it could interfere with the war effort."}, {"term": "Schenck v. United States", "definition": "A 1919 Supreme Court case ruling that limited freedom of speech during times of war or national crisis, restricting some civil liberties."}, {"term": "Selective Service Act", "definition": "Federal law allowing the government to raise an army by requiring males ages 18–45 to sign up for the draft."}, {"term": "14 Points", "definition": "Woodrow Wilson's postwar peace plan, calling for freedom of the seas, no secret treaties, free trade, an international organization, and other reforms. It was not adopted by the Allies or the USA."}, {"term": "Treaty of Versailles", "definition": "Peace treaty for WWI. Germany had to take full blame for the war, dissolve its armed forces, and pay reparations. It created the League of Nations; the U.S. Senate rejected it."}, {"term": "Big Four", "definition": "Leaders of the major Allied countries—Italy, France, the USA, and Great Britain—who met to form a peace agreement after WWI."}, {"term": "Henry Cabot Lodge", "definition": "Republican senator during WWI who strongly opposed the Treaty of Versailles because of the League of Nations. He wanted the U.S. to control its foreign policy and avoid future wars."}, {"term": "League of Nations", "definition": "International peace organization created by the Treaty of Versailles after WWI. The USA did not join because it feared being pulled into future foreign conflicts."}, {"term": "First Red Scare", "definition": "American fear over the spread of communism after WWI due to the Russian Revolution. It increased fear of immigrants and communism/anarchy and contributed to restrictions on immigration."}, {"term": "Palmer Raids", "definition": "Attempts in November 1919 and January 1920 to arrest and deport suspected radicals who supported anarchy or communism."}, {"term": "War Industries Board", "definition": "Government agency created in 1917 to coordinate purchases of war supplies, set quotas, allocate raw materials, mediate labor disputes, and increase government control over the wartime economy."}, {"term": "Food Administration", "definition": "Agency responsible for controlling food rationing and food prices during WWI and encouraging Americans to conserve food and grow their own gardens."}, {"term": "Woodrow Wilson", "definition": "Democratic President from 1913–1921 who wanted the Allies and Central Powers to adopt his 14 Points and wanted the U.S. to join the League of Nations."}, {"term": "Nationalism", "definition": "Feeling of being loyal to and proud of one's country, often accompanied by the belief that one's country is better or more important than others. A major cause of WWI in Europe."}, {"term": "Militarism", "definition": "Belief that a country should use military methods and build up military forces to gain power and achieve its goals. A cause of WWI in Europe."}, {"term": "Alliances", "definition": "Agreements or relationships between people, groups, or countries in which they agree to work together. A cause of WWI in Europe."}, {"term": "Imperialism", "definition": "One country controlling another."}];
+let flashOrder=[...Array(DATA.length).keys()], flashPos=0, flashFlipped=false;
+
+function showTab(id){
+ document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+ document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));
+ document.getElementById(id).classList.add('active');
+ [...document.querySelectorAll('.tabs button')].find(b=>b.getAttribute('onclick').includes("'"+id+"'")).classList.add('active');
+}
+function renderFlash(){
+ let i=flashOrder[flashPos], d=DATA[i];
+ document.getElementById('flashTerm').textContent=d.term;
+ document.getElementById('flashDef').textContent=d.definition;
+ document.getElementById('flashCount').textContent=`Card ${flashPos+1} of ${DATA.length}`;
+ document.getElementById('flashProg').style.width=((flashPos+1)/DATA.length*100)+'%';
+ document.getElementById('flashCard').classList.toggle('flipped',flashFlipped);
+}
+function flipFlash(){flashFlipped=!flashFlipped;renderFlash()}
+function flashNext(){flashPos=(flashPos+1)%DATA.length;flashFlipped=false;renderFlash()}
+function flashPrev(){flashPos=(flashPos-1+DATA.length)%DATA.length;flashFlipped=false;renderFlash()}
+function shuffleFlash(){flashOrder.sort(()=>Math.random()-.5);flashPos=0;flashFlipped=false;renderFlash()}
+
+let mcQueue=[],mcIndex=0,mcScore=0,mcAnswered=false;
+function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
+function resetMC(){mcQueue=shuffle([...Array(DATA.length).keys()]);mcIndex=0;mcScore=0;mcAnswered=false;renderMC()}
+function renderMC(){
+ if(mcIndex>=mcQueue.length){document.getElementById('mcQuestion').innerHTML=`🎉 Finished! You scored ${mcScore} / ${DATA.length}.`;document.getElementById('mcChoices').innerHTML='';document.getElementById('mcFeedback').textContent='';return}
+ let idx=mcQueue[mcIndex], item=DATA[idx];
+ document.getElementById('mcStats').innerHTML=`<span class="stat">Score: ${mcScore}</span><span class="stat">Question: ${mcIndex+1}/${DATA.length}</span>`;
+ document.getElementById('mcProg').style.width=(mcIndex/DATA.length*100)+'%';
+ document.getElementById('mcQuestion').textContent=item.definition;
+ document.getElementById('mcFeedback').textContent='';
+ mcAnswered=false;
+ let wrong=shuffle(DATA.map((_,i)=>i).filter(i=>i!==idx)).slice(0,3);
+ let opts=shuffle([idx,...wrong]);
+ document.getElementById('mcChoices').innerHTML=opts.map(i=>`<button class="choice" onclick="answerMC(this,${i},${idx})">${DATA[i].term}</button>`).join('');
+}
+function answerMC(btn,i,correct){
+ if(mcAnswered)return; mcAnswered=true;
+ document.querySelectorAll('#mcChoices .choice').forEach(b=>b.disabled=true);
+ if(i===correct){mcScore++;btn.classList.add('correct');document.getElementById('mcFeedback').textContent='✅ Correct!';}
+ else{btn.classList.add('wrong');[...document.querySelectorAll('#mcChoices .choice')].find(b=>b.textContent===DATA[correct].term).classList.add('correct');document.getElementById('mcFeedback').textContent='❌ Not quite — the answer is '+DATA[correct].term+'.';}
+ document.getElementById('mcStats').innerHTML=`<span class="stat">Score: ${mcScore}</span><span class="stat">Question: ${mcIndex+1}/${DATA.length}</span>`;
+}
+function nextMC(){if(mcIndex<mcQueue.length)mcIndex++;renderMC()}
+
+let matchRound=[],matchSelected=null,matchDone=0;
+function newMatch(){
+ matchRound=shuffle([...Array(DATA.length).keys()]).slice(0,10);
+ matchSelected=null;matchDone=0;
+ let left=matchRound.map(i=>({type:'term',i}));
+ let right=shuffle(matchRound.map(i=>({type:'def',i})));
+ document.getElementById('matchStats').innerHTML=`<span class="stat">Matched: 0 / 10</span>`;
+ document.getElementById('matchGrid').innerHTML=left.map(x=>`<button class="match-item" data-type="term" data-i="${x.i}" onclick="selectMatch(this)">${DATA[x.i].term}</button>`).concat(right.map(x=>`<button class="match-item" data-type="def" data-i="${x.i}" onclick="selectMatch(this)">${DATA[x.i].definition}</button>`)).join('');
+}
+function selectMatch(el){
+ if(el.classList.contains('matched'))return;
+ if(!matchSelected){matchSelected=el;el.classList.add('selected');return}
+ if(matchSelected===el)return;
+ let a=matchSelected,b=el;
+ if(a.dataset.type!==b.dataset.type && a.dataset.i===b.dataset.i){
+   a.classList.remove('selected');a.classList.add('matched');b.classList.add('matched');matchDone++;
+   document.getElementById('matchStats').innerHTML=`<span class="stat">Matched: ${matchDone} / 10</span>`;
+   if(matchDone===10)setTimeout(()=>alert('🎉 Perfect round!'),100);
+ }else{
+   a.classList.add('wrongflash');b.classList.add('wrongflash');
+   setTimeout(()=>{a.classList.remove('wrongflash');b.classList.remove('wrongflash')},300);
+   document.getElementById('matchStats').innerHTML=`<span class="stat">Matched: ${matchDone} / 10</span><span class="stat">Try again!</span>`;
+ }
+ a.classList.remove('selected');matchSelected=null;
+}
+
+let typeQueue=[],typeIndex=0,typeScore=0,typeChecked=false;
+function norm(s){return s.toLowerCase().replace(/[^a-z0-9]/g,'')}
+function resetType(){typeQueue=shuffle([...Array(DATA.length).keys()]);typeIndex=0;typeScore=0;typeChecked=false;renderType()}
+function renderType(){
+ if(typeIndex>=typeQueue.length){document.getElementById('typeQuestion').textContent=`🎉 Finished! You scored ${typeScore} / ${DATA.length}.`;document.getElementById('typeFeedback').textContent='';return}
+ let item=DATA[typeQueue[typeIndex]];
+ document.getElementById('typeStats').innerHTML=`<span class="stat">Score: ${typeScore}</span><span class="stat">Question: ${typeIndex+1}/${DATA.length}</span>`;
+ document.getElementById('typeProg').style.width=(typeIndex/DATA.length*100)+'%';
+ document.getElementById('typeQuestion').textContent=item.definition;
+ document.getElementById('typeInput').value='';
+ document.getElementById('typeFeedback').textContent='';
+ typeChecked=false;
+ setTimeout(()=>document.getElementById('typeInput').focus(),50);
+}
+function checkType(){
+ if(typeChecked || typeIndex>=typeQueue.length)return;
+ let item=DATA[typeQueue[typeIndex]], val=document.getElementById('typeInput').value;
+ typeChecked=true;
+ if(norm(val)===norm(item.term)){typeScore++;document.getElementById('typeFeedback').textContent='✅ Correct!';}
+ else document.getElementById('typeFeedback').textContent='❌ The answer is: '+item.term;
+ document.getElementById('typeStats').innerHTML=`<span class="stat">Score: ${typeScore}</span><span class="stat">Question: ${typeIndex+1}/${DATA.length}</span>`;
+}
+function nextType(){if(typeIndex<typeQueue.length)typeIndex++;renderType()}
+
+function renderStudy(){
+ document.getElementById('studyList').innerHTML=DATA.map((d,i)=>`<div class="card" style="margin:10px 0;border:1px solid #e2e8f0;box-shadow:none"><b>${i+1}. ${d.term}</b><div style="margin-top:7px;line-height:1.5">${d.definition}</div></div>`).join('');
+}
+renderFlash();resetMC();newMatch();resetType();renderStudy();
+</script>
+</body>
+</html>
