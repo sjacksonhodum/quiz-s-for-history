@@ -99,6 +99,46 @@ input.type.wrong{border-color:var(--red);background:var(--red-bg)}
 .study .item:last-child{border-bottom:0}
 .study .t{font-weight:700;font-size:16px}
 .study .d{margin-top:4px;font-size:14.5px;line-height:1.5;color:var(--ink-soft)}
+.modes{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:12px}
+button.mode{text-align:left;background:rgba(255,250,240,.75);color:var(--ink);border:1px solid var(--rule);padding:14px;border-radius:10px;font-weight:400;display:flex;flex-direction:column;gap:5px}
+button.mode:hover:not(:disabled){background:var(--paper-dark);border-color:var(--brass)}
+button.mode b{font-family:'Playfair Display',serif;font-size:17px}
+button.mode span{font-size:13px;color:var(--ink-soft);line-height:1.4}
+.scope{display:flex;flex-direction:column;gap:14px}
+.scope-all{align-self:flex-start}
+.scope-unit{border-top:1px solid var(--rule);padding-top:12px}
+.scope-chunks{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.scope-chunks button{font-weight:500;font-size:13px;padding:7px 11px}
+.flash{min-height:280px;background:var(--white);border:1px solid var(--rule);border-radius:14px;box-shadow:0 4px 18px rgba(80,60,20,.12);padding:26px 22px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;text-align:center;cursor:pointer;gap:14px;animation:pop .18s ease}
+.flash.flipped{background:#fbf3df}
+@keyframes pop{from{transform:scale(.98);opacity:.6}to{transform:none;opacity:1}}
+.flash .side{font-family:'Special Elite',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--brass-deep)}
+.fterm{font-family:'Playfair Display',serif;font-weight:700;font-size:clamp(28px,5vw,40px);line-height:1.2}
+.fdef{font-size:18px;line-height:1.55;max-width:640px}
+.toggle{font-size:13px;color:var(--ink-soft);display:flex;gap:6px;align-items:center;cursor:pointer}
+.match{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.8fr);gap:12px;align-items:start}
+.mcol{display:flex;flex-direction:column;gap:8px}
+button.mi{background:var(--white);color:var(--ink);border:2px solid var(--rule);font-weight:400;text-align:left;line-height:1.4;padding:10px 12px}
+button.mi.term{font-weight:600}
+button.mi.def{font-size:13.5px}
+button.mi:hover:not(:disabled){background:var(--paper-dark);border-color:var(--brass)}
+button.mi.selected{border-color:var(--brass);background:var(--paper-dark);box-shadow:0 0 0 2px var(--brass)}
+button.mi.matched{background:var(--green-bg);border-color:var(--green);color:var(--green);opacity:.7;cursor:default}
+button.mi.bad{background:var(--red-bg);border-color:var(--red);animation:shake .3s}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.prompt.tfdef{font-size:17px;background:var(--white);border:1px dashed var(--rule);border-radius:8px;padding:14px}
+.tf{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tf .opt{justify-content:center;font-weight:600;font-size:16px}
+.eras{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.eras .opt{flex-direction:column;gap:2px}
+.eras small{color:var(--ink-soft);font-size:12px;font-weight:400}
+.tip{background:var(--paper-dark);border-left:4px solid var(--brass);border-radius:6px;padding:12px 14px;font-size:15px;line-height:1.6;margin:0 0 16px}
+.cmp{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.cmp .c{background:var(--white);border:1px solid var(--rule);border-radius:10px;padding:14px}
+.cmp .c b{font-family:'Playfair Display',serif;font-size:17px;display:block;margin-top:2px}
+.cmp .c .u{font-family:'Special Elite',monospace;font-size:10.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--brass-deep)}
+.cmp .c p{margin:6px 0 0;font-size:14px;line-height:1.5;color:var(--ink-soft)}
+@media(max-width:600px){.match{grid-template-columns:1fr}.match .mcol:first-child{flex-direction:row;flex-wrap:wrap;position:sticky;top:0;z-index:2;background:var(--paper);padding:6px 0}.match .mcol:first-child .mi{padding:7px 10px;font-size:13px}.eras{grid-template-columns:1fr}}
 footer{text-align:center;font-size:12px;color:var(--ink-soft);margin-top:26px;font-style:italic}
 @media(max-width:600px){.card{padding:20px 14px 16px}.prompt{font-size:16.5px}.panel{padding:16px 14px}}
 </style>
@@ -106,17 +146,17 @@ footer{text-align:center;font-size:12px;color:var(--ink-soft);margin-top:26px;fo
 <body>
 <div class="wrap">
 <header class="masthead">
-  <div class="eyebrow">U.S. History · Gilded Age → WWI</div>
+  <div class="eyebrow">U.S. History · Gilded Age → New Deal</div>
   <h1>Midterm</h1>
-  <div class="sub">Every term from every quiz — 149 in all. Master it chunk by chunk, then prove it on the full exam.</div>
+  <div class="sub">Every term from every quiz — <span id="totalTerms"></span> in all. Master it chunk by chunk, then prove it on the full exam.</div>
   <div style="margin-top:8px"><a class="home-link" href="index.html">← all quizzes</a></div>
 </header>
 <main id="app"></main>
-<footer>Progress is saved in this browser. Keyboard: 1–4 to pick an answer · Enter for next.</footer>
+<footer>Progress is saved in this browser. Keyboard: 1–4 to pick an answer · Enter for next · Space flips flashcards.</footer>
 </div>
 
 <script>
-const RAW = {"ga":[{"t":"Plessy v. Ferguson","d":"Supreme court case legalizing segregation (1896). Concluded separate but equal did not violate the 14th amendment. Legalized Jim Crow laws in the South."},{"t":"Jim Crow Laws","d":"Segregation ordinances in the South requiring people to be separate by race (restrooms, theaters, restaurants, etc.)"},{"t":"Grandfather Clause","d":"Allowed citizens to vote whose grandfather or father had voted…even if they could not pay the poll tax or pass the literacy test."},{"t":"Poll Tax","d":"Jim Crow voting law in the south. Goal was to keep African Americans from voting by making them pay a tax they could not afford to vote."},{"t":"Literacy Test","d":"Jim Crow voting law in the south. Goal was to keep African Americans from voting by making them pass a reading test before voting."},{"t":"Ida B. Wells","d":"Early Civil Rights activist who brought attention to the issue of lynching through investigative journalism."},{"t":"Booker T. Washington","d":"Early Civil Rights activist who believed African Americans should gain rights over time after gaining an education and becoming an important part of the economy. Gave the opinion in the so-called Atlanta Compromise speech in 1895."},{"t":"W.E.B. DuBois","d":"Black leader who believed African Americans should gain rights immediately. Was a founding member of the NAACP."},{"t":"Disenfranchisement","d":"Not having the right to vote or being kept from voting. (African Americans and women)"},{"t":"Sharecropping/Tenant Farming","d":"Post-Civil War labor system in which farmers cultivated a plot of land they did not own. Proceeds from the crop were split with the landowner. Led most to poverty."},{"t":"14th Amendment","d":"Added after the Civil War, it made all former slaves citizens and gave them equal protection and equal rights under the law."},{"t":"Reservation","d":"Lands west of the Mississippi River on which many Native Americans were forced to live during the 1800s. By grouping them together, the government hoped to force Natives to adopt Christianity and other white man's culture."},{"t":"Indian Wars","d":"Series of armed conflicts (1854-1890) between settlers and/or the U.S. army as a result of America expanding west and forcing Natives to abandon their land and culture."},{"t":"Assimilation","d":"This occurs when a country or people adopt another more dominant culture either by choice or by force."},{"t":"Dawes (Severalty) Act","d":"This 1887 law gave Native Americans a parcel of land. The idea was that Indians would produce food by farming rather than by hunting which required more land as areas were \"hunted out.\" The former tribal lands then went to settlers."},{"t":"Wounded Knee Massacre","d":"This 1890 battle was the last major conflict between the U.S. Army and Native Americans. Over 150 Native American men, women, and children were killed and 51 injured."},{"t":"Federal Land Grants","d":"Program in which the government provided loans and/or gave away millions of acres of federally owned property to railroad corporations to lay tracks across the country. Some land was used for rail routes, while the rest was sold to finance construction."},{"t":"Transcontinental Railroad","d":"Rail line built to connect the east and west coasts. Results in increased trade in the USA. Leads to creation of time zones."},{"t":"Eminent Domain","d":"The government's right to seize private property for public use provided it pays compensation to the landowner. Example: This sometimes aided railroad construction."},{"t":"Chinese Exclusion Act","d":"Law that prevented the immigration of persons from Asia's largest country for a period of ten years. Many of this ethnic group had worked on railroads in the western U.S. and native-born Americans feared the foreign workers would take their jobs when the rail jobs ended."},{"t":"Monopoly/Trust","d":"Term for when one company controls a specific industry; eliminates its competition."},{"t":"John Rockefeller","d":"He owned the Standard Oil monopoly. Used both vertical and horizontal integration."},{"t":"Bessemer Process","d":"Method used to create steel, cheaper and easier. Makes steel affordable; increases its use."},{"t":"Yellow-Dog contract","d":"Agreements workers were forced to sign stating they would not join a union."},{"t":"Vertical Integration","d":"Occurs when a company creates a monopoly by owning all the steps from raw materials, to manufacturing, to transportation, to sale of the end product."},{"t":"Nativism","d":"Favoring people born in the U.S. (native born Americans) over immigrants."},{"t":"Laissez-Faire Capitalism","d":"Little to no government intervention (hands off) in economic activities. This is the relationship between business and the U.S. government during the Gilded Age."},{"t":"Social Darwinism (Survival of the Fittest)","d":"The belief is that the strongest businesses and people come out on top. Nature decides who is successful and who isn't. Used to justify monopolistic practices; God supports it."},{"t":"Gospel of Wealth","d":"Article written by Andrew Carnegie. Puts forth the idea of the rich giving back to those with less by funding charitable causes. Used as a justification for monopolies."},{"t":"Alexander Graham Bell","d":"Inventor of the telephone. Use of new technology helps the American economy."},{"t":"Thomas Edison","d":"Invents light bulb and electrical power stations; revolutionizes the world."},{"t":"Knights of Labor","d":"Led by Terrence Powderly, it was the world's largest labor organization. But with a diverse membership (blacks, women, unskilled) and emphasis on broad topics such as a.) getting rid of child labor, and b.) outlawing monopolies, it ultimately failed."},{"t":"American Federation of Labor","d":"Successful labor union that focused on basic rights of workers such as a.) better pay, b.) safer working conditions, and c.) better hours. Led by Samuel Gompers. Still exists."},{"t":"Eugene V. Debs","d":"Union leader and head of the Socialist Party. Ran for president five times."},{"t":"Socialism","d":"A way of organizing a society in which major industries are owned and controlled by the government rather than by individual people and companies."},{"t":"Andrew Carnegie","d":"Owner of the monopoly that would become U.S. Steel. Gave 90% of fortune to charity."},{"t":"Cornelius Vanderbilt","d":"Founder of many railroads…especially in the northeast. Very wealthy."},{"t":"J.P. Morgan","d":"Banker who financed and/or oversaw some of the nation's largest corporate mergers including electric and steel corporations."},{"t":"Horizontal Integration","d":"Occurs when a company creates a monopoly by controlling one phase in the production or selling of a good. For example, Rockefeller controlling the oil business at the refinery level."},{"t":"Urbanization","d":"The term is used when people start moving from farms (rural areas) to cities to work in industrial jobs."},{"t":"Ethnic Neighborhood","d":"An area with a much higher concentration of a particular race or cultural group that is not the dominant group among the general population. Immigrants often move to these areas where others are like them and share their culture."},{"t":"Tenements","d":"Very inexpensively built apartments during the Gilded Age. Very dangerous, small, and unsanitary. Families often lived in one or two rooms with no windows."},{"t":"Settlement House","d":"Over 400 were created in major cities with the goal of helping immigrants find jobs, housing, and learn English. Jane Addams's Hull House in Chicago was the most famous. (Funded by private citizens because there was no government welfare then.)"},{"t":"Social Gospel Movement","d":"Members of this group believed it was the Christian responsibility of persons with money to help those affected by economic inequality, poverty, alcoholism, crime, racial tensions, slum life, child labor, and poor schools."},{"t":"Ellis Island","d":"Immigration inspection station on the east coast (New York City). Became a symbol of new opportunities in America."},{"t":"Anti-Saloon League","d":"Supported prohibition (making alcohol illegal). Its effort resulted in the 18th amendment passed during the Progressive Era. Often protested outside bars and taverns. One of its members, Cary Nation, went to saloons and busted beer kegs and bottles."},{"t":"Women's Christian Temperance Union (WCTU)","d":"This group used Christianity to push the agenda of prohibition. Many members were the wives, mothers, or daughters of men who drank too much and abused their families."},{"t":"Political Machine","d":"Political organizations during the Gilded Age. They gave immigrants jobs and housing in exchange for their votes. Corrupt! Goal is for the politicians and bosses to get rich, not govern."},{"t":"Party Boss","d":"Leader of a political machine. Controls votes and picks who will run for office. Very corrupt. Example: William Tweed/Tammany Hall NYC."},{"t":"Tariff","d":"Tax on imports. Goal is to protect American business from cheap, foreign-made products."},{"t":"Populist Party (Omaha Platform)","d":"Also called the peoples' party, it was mostly made up of poor farmers. Its platform called for an end to national banks, graduated income tax, direct election of U.S. Senators, civil service reform, 8-hr work day, government control of important industries and bimetallism / free silver."},{"t":"Bimetallism (Free Silver)","d":"Populist goal to increase the money supply by switching the U.S. off the gold standard. Wanted to base money in circulation off both gold and silver. Critics disliked the plan because an increase in money supply would cause inflation. Farmers believed a little inflation was good."},{"t":"Gold Standard","d":"Basing money off the amount of gold the U.S. has in reserve. Keeps inflation down, but limits the amount of money in circulation because banks have less money to loan."},{"t":"William Jennings Bryan","d":"Leader of the Populist party. Ran for president twice and lost. Gave Cross of Gold Speech."},{"t":"Cross of Gold Speech","d":"Given in support of taking America off the gold standard. Believed the gold standard kept workers poor and made industrialists/monopolists rich at the expense of workers."},{"t":"Grange Movement","d":"Group formed to fight the monopolistic practices of railroads and grain elevators. They fought successfully for states to pass laws to regulate rail and storage facilities."},{"t":"Interstate Commerce Act","d":"Federal law which required railroad rates to be \"reasonable and just.\" However, it did not empower the government to fix specific rates."},{"t":"Farmers' Alliance","d":"Farmer's rights movement created after the Grange Movement. Goal was to improve the economic standing of farmers through regulation and increase in money supply. Made up of white and black farmers. Leads to the creation of the Populist Party."},{"t":"National American Woman Suffrage Association","d":"Women's rights organization. Its goal was to get women the right to vote. Lead by Susan B. Anthony, Carrie Chapman Catt, and Anna Howard Shaw."},{"t":"Wabash v. Illinois","d":"Supreme Court case that ruled states could not regulate railroads. The decision stated that transportation across state lines could only be regulated by the federal government."},{"t":"Panic of 1893","d":"A stock market collapse led to 20% unemployment, soup kitchens, and hobos. However, President Cleveland took a \"hands off\" approach to the crisis and let it run its course."},{"t":"Sherman Antitrust Act","d":"Federal law making trusts/monopolies that limit competition illegal. Increases the power of the federal government and attempts to take power away from monopolies."},{"t":"Pendleton Civil Service Act","d":"Federal law/regulation requiring government jobs be given on merit. Goal was to end corruption, graft, and make the government work better; and power of political machines."}],"imp":[{"t":"Alaska Purchase (1867)","d":"Also called Seward's Folly. Bought from Russia for $7.2 million. Discovery of natural resources like gold and oil proved the purchase was wise."},{"t":"Alfred T. Mahan","d":"U.S. Navy officer who believed the U.S. needed to expand its Navy to increase its size and power around the world."},{"t":"Yellow Journalism","d":"Newspaper articles that are untruthful with the goal of selling papers. They are presently called tabloids. A leading cause of the Spanish-American War."},{"t":"Spanish-American War","d":"Also called the “Splendid Little War.” In 1898 it lasted 3 months. America vs. Spain. America wins and becomes a world power. Takes control of Cuba for 2 years. The U.S. gains the Philippines, Guam, and Puerto Rico."},{"t":"USS Maine","d":"U.S. Navy ship exploded in Havana harbor. Yellow journalists and American politicians blamed Spain and used it as a reason for the Spanish-American War."},{"t":"Theodore Roosevelt","d":"Republican President from 1901–09. McKinley’s Vice President. Became president after McKinley was assassinated. Considered the first modern president. Built the Panama Canal and believed in the Roosevelt Corollary. Led the Rough Riders at the Battle of San Juan Hill."},{"t":"Rough Riders","d":"Volunteer Cavalry unit led by Teddy Roosevelt during the Spanish-American War."},{"t":"Annexation of Hawaii (1898)","d":"In 1898 Hawaii became part of the United States for economic and military reasons."},{"t":"Puerto Rico","d":"Became part of the U.S. empire following the Spanish-American War."},{"t":"Anti-Imperialist League","d":"Group of Americans who did not support imperialism. They believed imperialism went against the ideals the country was founded on in the Constitution."},{"t":"Platt Amendment","d":"Allowed Cuba to be free from American rule following the Spanish-American War. Allowed the U.S. to intervene in Cuban affairs and gave the U.S. Guantanamo Bay military base."},{"t":"Sphere of Influence","d":"A territorial area over which political or economic influence is wielded by one nation."},{"t":"Open Door Policy","d":"U.S. policy in China calling for free trade in the country. The U.S. wanted no spheres of influence in China."},{"t":"Boxer Rebellion","d":"Violent anti-foreigner movement in China from 1899–1901. Many Chinese had grown tired of foreign imperialism and Christian missionaries."},{"t":"Big Stick Policy","d":"Teddy Roosevelt’s foreign policy. The idea was to negotiate peacefully but with the threat of military force to ensure positive results."},{"t":"Panama Canal","d":"Built through the isthmus of Panama. Allowed quicker shipping by connecting the Pacific and Atlantic Oceans. Teddy Roosevelt negotiated its building by helping the Panamanians gain independence from Colombia."},{"t":"Gentlemen’s Agreement","d":"Agreement between the USA and Japan. Japan agreed to stop emigration to the U.S. of non-skilled workers. The U.S. agreed to end segregation laws aimed at the Japanese."},{"t":"Roosevelt Corollary","d":"Added to the Monroe Doctrine. The U.S. would intervene in conflicts between Europe and Latin America. It reflected the idea that the U.S. had become the world’s police."},{"t":"Dollar Diplomacy","d":"Foreign policy of Howard Taft. The U.S. government encouraged investment in foreign countries to increase trade."},{"t":"Moral Diplomacy","d":"Foreign policy of Woodrow Wilson. Stated the U.S. would only support countries who had the same economic and democratic beliefs as the USA. Wanted to spread democracy and capitalism."},{"t":"Teller Amendment","d":"Passed after President McKinley’s Spanish-American War message. It stated the U.S. could go to war in Cuba but could not annex the island after the war."},{"t":"Imperialism","d":"Economic, military, and/or cultural influence of one country over other countries."}],"prog":[{"t":"Progressive Movement","d":"Goal was to fix the problems created in the Gilded Age. Wanted government to listen to citizens, labor reforms, and social reforms."},{"t":"Scientific Management","d":"Progressives wanted to increase productivity and efficiency with science."},{"t":"Muckrakers","d":"Investigative journalists who exposed the problems of the Gilded Age. They also provided solutions to the problems."},{"t":"16th Amendment","d":"Ratified in 1913; allows Congress to impose a graduated income tax. The more you make, the more you pay."},{"t":"Jacob Riis","d":"A muckraker who used photography and writing to expose the living and working conditions of those in poverty."},{"t":"Australian (Secret) Ballot","d":"When voters mark their choices in private. This idea was pushed by the Populist Party and adopted by Progressives."},{"t":"Direct Primary","d":"A Progressive reform when voters choose who will run for office, not the party or political machine. Goal was to end corruption in politics."},{"t":"Robert La Follette","d":"Progressive Governor and Senator from Wisconsin. Led Wisconsin as the first state to adopt many Progressive reforms. Many aimed at giving citizens a bigger role in government."},{"t":"17th Amendment","d":"Allowed the direct election of U.S. Senators. Goal was to make government more responsive to citizens instead of monopolies/trusts and political machines."},{"t":"Initiative","d":"Voter-driven petition to change a law. Led by progressive reforms to make government more responsive to citizens."},{"t":"Referendum","d":"A public vote on proposed legislation. A progressive reform aimed at giving voters a bigger voice in government."},{"t":"Recall","d":"Allows voters the opportunity to remove an elected official by having another election before their term is up. Must be started by voters through petitions."},{"t":"Social Welfare","d":"Things that impact the good of the people. Often refers to services provided by the government for the people."},{"t":"Municipal Reform","d":"Changing city government so it is more efficient, honest, and responsive."},{"t":"Teddy Roosevelt","d":"Republican Progressive Era President 1901–1909. Also ran for the Bull Moose Party in 1912, helping split the Republican vote. Known for trust busting, conservation, and Big Stick Policy. Considered the first modern president due to his use of the media."},{"t":"Square Deal","d":"Teddy Roosevelt's domestic programs. Goals included conservation, regulating big business, and protecting consumers."},{"t":"Trust Busting","d":"Teddy Roosevelt, Howard Taft, and Woodrow Wilson used the Sherman Anti-Trust Act to break up trusts/monopolies because they discouraged competition and hurt consumers."},{"t":"Elkins Act","d":"A federal law allowing the Interstate Commerce Commission the power to fine railroads that gave unfair rebates or discriminated with unfair pricing."},{"t":"The Jungle","d":"Muckraking book written by Upton Sinclair. The fictional book depicts actual conditions inside meatpacking plants and made people aware of unsanitary conditions."},{"t":"Pure Food and Drug Act (1906)","d":"Requires truth in labeling of goods sold in the USA. Companies could no longer claim their product did things it did not do."},{"t":"Meat Inspection Act (1906)","d":"Created as a reaction to The Jungle. Required sanitary conditions in meatpacking facilities."},{"t":"Conservation","d":"Preserving or protecting something with the goal of keeping it in its natural state."},{"t":"William Howard Taft","d":"President Roosevelt's hand-picked successor. Republican President 1909–1913. Angered Teddy Roosevelt and other Republicans because he did not copy Teddy's presidency and decreased conservation efforts. Only former president to become Chief Justice of the Supreme Court."},{"t":"18th Amendment","d":"Ratified in 1919; prohibited commercial manufacture, sale, and consumption of alcoholic beverages."},{"t":"Payne-Aldrich Tariff","d":"Passed during Taft's presidency. Increased tariffs, which upset members of his party and led to Taft losing Teddy Roosevelt's support."},{"t":"Eugene V. Debs","d":"American union leader and head of the Socialist Party. Ran for President five times as a Socialist. Wanted the USA to adopt socialism."},{"t":"Bull Moose Party","d":"Political party started by Teddy Roosevelt for the 1912 election because he did not agree with Howard Taft’s policies."},{"t":"Underwood Tariff","d":"Lowered tariffs from 40% to 25%. Many American businesses opposed the change. Progressives approved of the change."},{"t":"Clayton Anti-Trust Act","d":"Federal law aimed at increasing the government's ability to regulate, prosecute, and break up trusts/monopolies because they reduced competition."},{"t":"Federal Trade Commission","d":"Federal agency created to protect consumers and end monopolies. Allowed for government oversight of business."},{"t":"Niagara Movement","d":"Civil Rights organization founded by W.E.B. Du Bois. Called for immediate end to racial segregation and disenfranchisement. Disagreed with Booker T. Washington about getting rights slowly."},{"t":"NAACP","d":"National Association for the Advancement of Colored People started in 1909. Started to gain equal rights for all African Americans. Uses the court system to ensure constitutional rights are upheld."},{"t":"National Women Suffrage Association","d":"Women's rights movement. Goal was to get women the right to vote. Led by Susan B. Anthony, Carrie Chapman Catt, and Anna Howard Shaw."},{"t":"19th Amendment","d":"Prohibits any citizen of the U.S. from being denied the right to vote based on sex. This gave women the right to vote."},{"t":"Federal Reserve","d":"Created to be independent from the government to prevent political influence. The board controls the amount of money in circulation and interest rates on loans."},{"t":"League of Women Voters","d":"Started by suffragist Carrie Chapman Catt as a result of women getting the right to vote. Goal was to encourage women to vote and support issues important to women."}],"ww1":[{"t":"Neutrality","d":"America's foreign policy at the start of WWI. The USA wanted to stay out of the war and did not officially support either alliance; it sold goods to both sides."},{"t":"Lusitania","d":"Passenger ship sunk by the Germans as a result of unrestricted submarine warfare. 128 American civilians were killed. This helped lead to U.S. entry into WWI."},{"t":"Sussex Pledge","d":"Promise made in 1916 by Germany to the USA to end unrestricted submarine warfare. The USA wanted freedom of the seas."},{"t":"Propaganda","d":"Information aimed at influencing the attitude of the community toward a cause or position by presenting one side of an argument. The U.S. government used it to gain support and funding for WWI."},{"t":"Unrestricted Submarine Warfare","d":"German policy of sinking ships entering the war zone without warning. It was a major reason for U.S. entry into WWI."},{"t":"Allied Powers","d":"Great Britain, France, Italy, and Russia. The U.S.A. joined the war on their side in 1917. Russia later left because of its revolution."},{"t":"Central Powers","d":"Alliance of Germany, Austria-Hungary, and the Ottoman Empire during WWI."},{"t":"Zimmerman Note","d":"A 1917 proposition from Germany to Mexico, intercepted by the U.S.A., asking Mexico to join the Central Powers and attack the U.S.A. Mexico was promised Texas, New Mexico, and Arizona."},{"t":"Russian Revolution","d":"Bolshevik/Communist revolution in Russia against the autocratic Tsarist government. It led Russia to stop fighting in WWI and eventually become the Soviet Union."},{"t":"Civil Liberties","d":"Rights and freedoms protected by the First Amendment, allowing people to speak, think, assemble, organize, worship, or petition without government interference or restraint."},{"t":"Espionage Act","d":"Law that prohibited interference with military operations or recruitment, and prohibited support for U.S. enemies during wartime. It was upheld in Schenck v. United States."},{"t":"Sedition Act","d":"Law that made certain negative speech toward or about the government during wartime or national crisis illegal because it could interfere with the war effort."},{"t":"Schenck v. United States","d":"A 1919 Supreme Court case ruling that limited freedom of speech during times of war or national crisis, restricting some civil liberties."},{"t":"Selective Service Act","d":"Federal law allowing the government to raise an army by requiring males ages 18–45 to sign up for the draft."},{"t":"14 Points","d":"Woodrow Wilson's postwar peace plan, calling for freedom of the seas, no secret treaties, free trade, an international organization, and other reforms. It was not adopted by the Allies or the USA."},{"t":"Treaty of Versailles","d":"Peace treaty for WWI. Germany had to take full blame for the war, dissolve its armed forces, and pay reparations. It created the League of Nations; the U.S. Senate rejected it."},{"t":"Big Four","d":"Leaders of the major Allied countries—Italy, France, the USA, and Great Britain—who met to form a peace agreement after WWI."},{"t":"Henry Cabot Lodge","d":"Republican senator during WWI who strongly opposed the Treaty of Versailles because of the League of Nations. He wanted the U.S. to control its foreign policy and avoid future wars."},{"t":"League of Nations","d":"International peace organization created by the Treaty of Versailles after WWI. The USA did not join because it feared being pulled into future foreign conflicts."},{"t":"First Red Scare","d":"American fear over the spread of communism after WWI due to the Russian Revolution. It increased fear of immigrants and communism/anarchy and contributed to restrictions on immigration."},{"t":"Palmer Raids","d":"Attempts in November 1919 and January 1920 to arrest and deport suspected radicals who supported anarchy or communism."},{"t":"War Industries Board","d":"Government agency created in 1917 to coordinate purchases of war supplies, set quotas, allocate raw materials, mediate labor disputes, and increase government control over the wartime economy."},{"t":"Food Administration","d":"Agency responsible for controlling food rationing and food prices during WWI and encouraging Americans to conserve food and grow their own gardens."},{"t":"Woodrow Wilson","d":"Democratic President from 1913–1921 who wanted the Allies and Central Powers to adopt his 14 Points and wanted the U.S. to join the League of Nations."},{"t":"Nationalism","d":"Feeling of being loyal to and proud of one's country, often accompanied by the belief that one's country is better or more important than others. A major cause of WWI in Europe."},{"t":"Militarism","d":"Belief that a country should use military methods and build up military forces to gain power and achieve its goals. A cause of WWI in Europe."},{"t":"Alliances","d":"Agreements or relationships between people, groups, or countries in which they agree to work together. A cause of WWI in Europe."},{"t":"Imperialism","d":"One country controlling another."}]};
+const RAW = {"ga":[{"t":"Plessy v. Ferguson","d":"Supreme court case legalizing segregation (1896). Concluded separate but equal did not violate the 14th amendment. Legalized Jim Crow laws in the South."},{"t":"Jim Crow Laws","d":"Segregation ordinances in the South requiring people to be separate by race (restrooms, theaters, restaurants, etc.)"},{"t":"Grandfather Clause","d":"Allowed citizens to vote whose grandfather or father had voted…even if they could not pay the poll tax or pass the literacy test."},{"t":"Poll Tax","d":"Jim Crow voting law in the south. Goal was to keep African Americans from voting by making them pay a tax they could not afford to vote."},{"t":"Literacy Test","d":"Jim Crow voting law in the south. Goal was to keep African Americans from voting by making them pass a reading test before voting."},{"t":"Ida B. Wells","d":"Early Civil Rights activist who brought attention to the issue of lynching through investigative journalism."},{"t":"Booker T. Washington","d":"Early Civil Rights activist who believed African Americans should gain rights over time after gaining an education and becoming an important part of the economy. Gave the opinion in the so-called Atlanta Compromise speech in 1895."},{"t":"W.E.B. DuBois","d":"Black leader who believed African Americans should gain rights immediately. Was a founding member of the NAACP."},{"t":"Disenfranchisement","d":"Not having the right to vote or being kept from voting. (African Americans and women)"},{"t":"Sharecropping/Tenant Farming","d":"Post-Civil War labor system in which farmers cultivated a plot of land they did not own. Proceeds from the crop were split with the landowner. Led most to poverty."},{"t":"14th Amendment","d":"Added after the Civil War, it made all former slaves citizens and gave them equal protection and equal rights under the law."},{"t":"Reservation","d":"Lands west of the Mississippi River on which many Native Americans were forced to live during the 1800s. By grouping them together, the government hoped to force Natives to adopt Christianity and other white man's culture."},{"t":"Indian Wars","d":"Series of armed conflicts (1854-1890) between settlers and/or the U.S. army as a result of America expanding west and forcing Natives to abandon their land and culture."},{"t":"Assimilation","d":"This occurs when a country or people adopt another more dominant culture either by choice or by force."},{"t":"Dawes (Severalty) Act","d":"This 1887 law gave Native Americans a parcel of land. The idea was that Indians would produce food by farming rather than by hunting which required more land as areas were \"hunted out.\" The former tribal lands then went to settlers."},{"t":"Wounded Knee Massacre","d":"This 1890 battle was the last major conflict between the U.S. Army and Native Americans. Over 150 Native American men, women, and children were killed and 51 injured."},{"t":"Federal Land Grants","d":"Program in which the government provided loans and/or gave away millions of acres of federally owned property to railroad corporations to lay tracks across the country. Some land was used for rail routes, while the rest was sold to finance construction."},{"t":"Transcontinental Railroad","d":"Rail line built to connect the east and west coasts. Results in increased trade in the USA. Leads to creation of time zones."},{"t":"Eminent Domain","d":"The government's right to seize private property for public use provided it pays compensation to the landowner. Example: This sometimes aided railroad construction."},{"t":"Chinese Exclusion Act","d":"Law that prevented the immigration of persons from Asia's largest country for a period of ten years. Many of this ethnic group had worked on railroads in the western U.S. and native-born Americans feared the foreign workers would take their jobs when the rail jobs ended."},{"t":"Monopoly/Trust","d":"Term for when one company controls a specific industry; eliminates its competition."},{"t":"John Rockefeller","d":"He owned the Standard Oil monopoly. Used both vertical and horizontal integration."},{"t":"Bessemer Process","d":"Method used to create steel, cheaper and easier. Makes steel affordable; increases its use."},{"t":"Yellow-Dog contract","d":"Agreements workers were forced to sign stating they would not join a union."},{"t":"Vertical Integration","d":"Occurs when a company creates a monopoly by owning all the steps from raw materials, to manufacturing, to transportation, to sale of the end product."},{"t":"Nativism","d":"Favoring people born in the U.S. (native born Americans) over immigrants."},{"t":"Laissez-Faire Capitalism","d":"Little to no government intervention (hands off) in economic activities. This is the relationship between business and the U.S. government during the Gilded Age."},{"t":"Social Darwinism (Survival of the Fittest)","d":"The belief is that the strongest businesses and people come out on top. Nature decides who is successful and who isn't. Used to justify monopolistic practices; God supports it."},{"t":"Gospel of Wealth","d":"Article written by Andrew Carnegie. Puts forth the idea of the rich giving back to those with less by funding charitable causes. Used as a justification for monopolies."},{"t":"Alexander Graham Bell","d":"Inventor of the telephone. Use of new technology helps the American economy."},{"t":"Thomas Edison","d":"Invents light bulb and electrical power stations; revolutionizes the world."},{"t":"Knights of Labor","d":"Led by Terrence Powderly, it was the world's largest labor organization. But with a diverse membership (blacks, women, unskilled) and emphasis on broad topics such as a.) getting rid of child labor, and b.) outlawing monopolies, it ultimately failed."},{"t":"American Federation of Labor","d":"Successful labor union that focused on basic rights of workers such as a.) better pay, b.) safer working conditions, and c.) better hours. Led by Samuel Gompers. Still exists."},{"t":"Eugene V. Debs","d":"Union leader and head of the Socialist Party. Ran for president five times."},{"t":"Socialism","d":"A way of organizing a society in which major industries are owned and controlled by the government rather than by individual people and companies."},{"t":"Andrew Carnegie","d":"Owner of the monopoly that would become U.S. Steel. Gave 90% of fortune to charity."},{"t":"Cornelius Vanderbilt","d":"Founder of many railroads…especially in the northeast. Very wealthy."},{"t":"J.P. Morgan","d":"Banker who financed and/or oversaw some of the nation's largest corporate mergers including electric and steel corporations."},{"t":"Horizontal Integration","d":"Occurs when a company creates a monopoly by controlling one phase in the production or selling of a good. For example, Rockefeller controlling the oil business at the refinery level."},{"t":"Urbanization","d":"The term is used when people start moving from farms (rural areas) to cities to work in industrial jobs."},{"t":"Ethnic Neighborhood","d":"An area with a much higher concentration of a particular race or cultural group that is not the dominant group among the general population. Immigrants often move to these areas where others are like them and share their culture."},{"t":"Tenements","d":"Very inexpensively built apartments during the Gilded Age. Very dangerous, small, and unsanitary. Families often lived in one or two rooms with no windows."},{"t":"Settlement House","d":"Over 400 were created in major cities with the goal of helping immigrants find jobs, housing, and learn English. Jane Addams's Hull House in Chicago was the most famous. (Funded by private citizens because there was no government welfare then.)"},{"t":"Social Gospel Movement","d":"Members of this group believed it was the Christian responsibility of persons with money to help those affected by economic inequality, poverty, alcoholism, crime, racial tensions, slum life, child labor, and poor schools."},{"t":"Ellis Island","d":"Immigration inspection station on the east coast (New York City). Became a symbol of new opportunities in America."},{"t":"Anti-Saloon League","d":"Supported prohibition (making alcohol illegal). Its effort resulted in the 18th amendment passed during the Progressive Era. Often protested outside bars and taverns. One of its members, Cary Nation, went to saloons and busted beer kegs and bottles."},{"t":"Women's Christian Temperance Union (WCTU)","d":"This group used Christianity to push the agenda of prohibition. Many members were the wives, mothers, or daughters of men who drank too much and abused their families."},{"t":"Political Machine","d":"Political organizations during the Gilded Age. They gave immigrants jobs and housing in exchange for their votes. Corrupt! Goal is for the politicians and bosses to get rich, not govern."},{"t":"Party Boss","d":"Leader of a political machine. Controls votes and picks who will run for office. Very corrupt. Example: William Tweed/Tammany Hall NYC."},{"t":"Tariff","d":"Tax on imports. Goal is to protect American business from cheap, foreign-made products."},{"t":"Populist Party (Omaha Platform)","d":"Also called the peoples' party, it was mostly made up of poor farmers. Its platform called for an end to national banks, graduated income tax, direct election of U.S. Senators, civil service reform, 8-hr work day, government control of important industries and bimetallism / free silver."},{"t":"Bimetallism (Free Silver)","d":"Populist goal to increase the money supply by switching the U.S. off the gold standard. Wanted to base money in circulation off both gold and silver. Critics disliked the plan because an increase in money supply would cause inflation. Farmers believed a little inflation was good."},{"t":"Gold Standard","d":"Basing money off the amount of gold the U.S. has in reserve. Keeps inflation down, but limits the amount of money in circulation because banks have less money to loan."},{"t":"William Jennings Bryan","d":"Leader of the Populist party. Ran for president twice and lost. Gave Cross of Gold Speech."},{"t":"Cross of Gold Speech","d":"Given in support of taking America off the gold standard. Believed the gold standard kept workers poor and made industrialists/monopolists rich at the expense of workers."},{"t":"Grange Movement","d":"Group formed to fight the monopolistic practices of railroads and grain elevators. They fought successfully for states to pass laws to regulate rail and storage facilities."},{"t":"Interstate Commerce Act","d":"Federal law which required railroad rates to be \"reasonable and just.\" However, it did not empower the government to fix specific rates."},{"t":"Farmers' Alliance","d":"Farmer's rights movement created after the Grange Movement. Goal was to improve the economic standing of farmers through regulation and increase in money supply. Made up of white and black farmers. Leads to the creation of the Populist Party."},{"t":"National American Woman Suffrage Association","d":"Women's rights organization. Its goal was to get women the right to vote. Lead by Susan B. Anthony, Carrie Chapman Catt, and Anna Howard Shaw."},{"t":"Wabash v. Illinois","d":"Supreme Court case that ruled states could not regulate railroads. The decision stated that transportation across state lines could only be regulated by the federal government."},{"t":"Panic of 1893","d":"A stock market collapse led to 20% unemployment, soup kitchens, and hobos. However, President Cleveland took a \"hands off\" approach to the crisis and let it run its course."},{"t":"Sherman Antitrust Act","d":"Federal law making trusts/monopolies that limit competition illegal. Increases the power of the federal government and attempts to take power away from monopolies."},{"t":"Pendleton Civil Service Act","d":"Federal law/regulation requiring government jobs be given on merit. Goal was to end corruption, graft, and make the government work better; and power of political machines."}],"imp":[{"t":"Alaska Purchase (1867)","d":"Also called Seward's Folly. Bought from Russia for $7.2 million. Discovery of natural resources like gold and oil proved the purchase was wise."},{"t":"Alfred T. Mahan","d":"U.S. Navy officer who believed the U.S. needed to expand its Navy to increase its size and power around the world."},{"t":"Yellow Journalism","d":"Newspaper articles that are untruthful with the goal of selling papers. They are presently called tabloids. A leading cause of the Spanish-American War."},{"t":"Spanish-American War","d":"Also called the “Splendid Little War.” In 1898 it lasted 3 months. America vs. Spain. America wins and becomes a world power. Takes control of Cuba for 2 years. The U.S. gains the Philippines, Guam, and Puerto Rico."},{"t":"USS Maine","d":"U.S. Navy ship exploded in Havana harbor. Yellow journalists and American politicians blamed Spain and used it as a reason for the Spanish-American War."},{"t":"Theodore Roosevelt","d":"Republican President from 1901–09. McKinley’s Vice President. Became president after McKinley was assassinated. Considered the first modern president. Built the Panama Canal and believed in the Roosevelt Corollary. Led the Rough Riders at the Battle of San Juan Hill."},{"t":"Rough Riders","d":"Volunteer Cavalry unit led by Teddy Roosevelt during the Spanish-American War."},{"t":"Annexation of Hawaii (1898)","d":"In 1898 Hawaii became part of the United States for economic and military reasons."},{"t":"Puerto Rico","d":"Became part of the U.S. empire following the Spanish-American War."},{"t":"Anti-Imperialist League","d":"Group of Americans who did not support imperialism. They believed imperialism went against the ideals the country was founded on in the Constitution."},{"t":"Platt Amendment","d":"Allowed Cuba to be free from American rule following the Spanish-American War. Allowed the U.S. to intervene in Cuban affairs and gave the U.S. Guantanamo Bay military base."},{"t":"Sphere of Influence","d":"A territorial area over which political or economic influence is wielded by one nation."},{"t":"Open Door Policy","d":"U.S. policy in China calling for free trade in the country. The U.S. wanted no spheres of influence in China."},{"t":"Boxer Rebellion","d":"Violent anti-foreigner movement in China from 1899–1901. Many Chinese had grown tired of foreign imperialism and Christian missionaries."},{"t":"Big Stick Policy","d":"Teddy Roosevelt’s foreign policy. The idea was to negotiate peacefully but with the threat of military force to ensure positive results."},{"t":"Panama Canal","d":"Built through the isthmus of Panama. Allowed quicker shipping by connecting the Pacific and Atlantic Oceans. Teddy Roosevelt negotiated its building by helping the Panamanians gain independence from Colombia."},{"t":"Gentlemen’s Agreement","d":"Agreement between the USA and Japan. Japan agreed to stop emigration to the U.S. of non-skilled workers. The U.S. agreed to end segregation laws aimed at the Japanese."},{"t":"Roosevelt Corollary","d":"Added to the Monroe Doctrine. The U.S. would intervene in conflicts between Europe and Latin America. It reflected the idea that the U.S. had become the world’s police."},{"t":"Dollar Diplomacy","d":"Foreign policy of Howard Taft. The U.S. government encouraged investment in foreign countries to increase trade."},{"t":"Moral Diplomacy","d":"Foreign policy of Woodrow Wilson. Stated the U.S. would only support countries who had the same economic and democratic beliefs as the USA. Wanted to spread democracy and capitalism."},{"t":"Teller Amendment","d":"Passed after President McKinley’s Spanish-American War message. It stated the U.S. could go to war in Cuba but could not annex the island after the war."},{"t":"Imperialism","d":"Economic, military, and/or cultural influence of one country over other countries."}],"prog":[{"t":"Progressive Movement","d":"Goal was to fix the problems created in the Gilded Age. Wanted government to listen to citizens, labor reforms, and social reforms."},{"t":"Scientific Management","d":"Progressives wanted to increase productivity and efficiency with science."},{"t":"Muckrakers","d":"Investigative journalists who exposed the problems of the Gilded Age. They also provided solutions to the problems."},{"t":"16th Amendment","d":"Ratified in 1913; allows Congress to impose a graduated income tax. The more you make, the more you pay."},{"t":"Jacob Riis","d":"A muckraker who used photography and writing to expose the living and working conditions of those in poverty."},{"t":"Australian (Secret) Ballot","d":"When voters mark their choices in private. This idea was pushed by the Populist Party and adopted by Progressives."},{"t":"Direct Primary","d":"A Progressive reform when voters choose who will run for office, not the party or political machine. Goal was to end corruption in politics."},{"t":"Robert La Follette","d":"Progressive Governor and Senator from Wisconsin. Led Wisconsin as the first state to adopt many Progressive reforms. Many aimed at giving citizens a bigger role in government."},{"t":"17th Amendment","d":"Allowed the direct election of U.S. Senators. Goal was to make government more responsive to citizens instead of monopolies/trusts and political machines."},{"t":"Initiative","d":"Voter-driven petition to change a law. Led by progressive reforms to make government more responsive to citizens."},{"t":"Referendum","d":"A public vote on proposed legislation. A progressive reform aimed at giving voters a bigger voice in government."},{"t":"Recall","d":"Allows voters the opportunity to remove an elected official by having another election before their term is up. Must be started by voters through petitions."},{"t":"Social Welfare","d":"Things that impact the good of the people. Often refers to services provided by the government for the people."},{"t":"Municipal Reform","d":"Changing city government so it is more efficient, honest, and responsive."},{"t":"Teddy Roosevelt","d":"Republican Progressive Era President 1901–1909. Also ran for the Bull Moose Party in 1912, helping split the Republican vote. Known for trust busting, conservation, and Big Stick Policy. Considered the first modern president due to his use of the media."},{"t":"Square Deal","d":"Teddy Roosevelt's domestic programs. Goals included conservation, regulating big business, and protecting consumers."},{"t":"Trust Busting","d":"Teddy Roosevelt, Howard Taft, and Woodrow Wilson used the Sherman Anti-Trust Act to break up trusts/monopolies because they discouraged competition and hurt consumers."},{"t":"Elkins Act","d":"A federal law allowing the Interstate Commerce Commission the power to fine railroads that gave unfair rebates or discriminated with unfair pricing."},{"t":"The Jungle","d":"Muckraking book written by Upton Sinclair. The fictional book depicts actual conditions inside meatpacking plants and made people aware of unsanitary conditions."},{"t":"Pure Food and Drug Act (1906)","d":"Requires truth in labeling of goods sold in the USA. Companies could no longer claim their product did things it did not do."},{"t":"Meat Inspection Act (1906)","d":"Created as a reaction to The Jungle. Required sanitary conditions in meatpacking facilities."},{"t":"Conservation","d":"Preserving or protecting something with the goal of keeping it in its natural state."},{"t":"William Howard Taft","d":"President Roosevelt's hand-picked successor. Republican President 1909–1913. Angered Teddy Roosevelt and other Republicans because he did not copy Teddy's presidency and decreased conservation efforts. Only former president to become Chief Justice of the Supreme Court."},{"t":"18th Amendment","d":"Ratified in 1919; prohibited commercial manufacture, sale, and consumption of alcoholic beverages."},{"t":"Payne-Aldrich Tariff","d":"Passed during Taft's presidency. Increased tariffs, which upset members of his party and led to Taft losing Teddy Roosevelt's support."},{"t":"Eugene V. Debs","d":"American union leader and head of the Socialist Party. Ran for President five times as a Socialist. Wanted the USA to adopt socialism."},{"t":"Bull Moose Party","d":"Political party started by Teddy Roosevelt for the 1912 election because he did not agree with Howard Taft’s policies."},{"t":"Underwood Tariff","d":"Lowered tariffs from 40% to 25%. Many American businesses opposed the change. Progressives approved of the change."},{"t":"Clayton Anti-Trust Act","d":"Federal law aimed at increasing the government's ability to regulate, prosecute, and break up trusts/monopolies because they reduced competition."},{"t":"Federal Trade Commission","d":"Federal agency created to protect consumers and end monopolies. Allowed for government oversight of business."},{"t":"Niagara Movement","d":"Civil Rights organization founded by W.E.B. Du Bois. Called for immediate end to racial segregation and disenfranchisement. Disagreed with Booker T. Washington about getting rights slowly."},{"t":"NAACP","d":"National Association for the Advancement of Colored People started in 1909. Started to gain equal rights for all African Americans. Uses the court system to ensure constitutional rights are upheld."},{"t":"National Women Suffrage Association","d":"Women's rights movement. Goal was to get women the right to vote. Led by Susan B. Anthony, Carrie Chapman Catt, and Anna Howard Shaw."},{"t":"19th Amendment","d":"Prohibits any citizen of the U.S. from being denied the right to vote based on sex. This gave women the right to vote."},{"t":"Federal Reserve","d":"Created to be independent from the government to prevent political influence. The board controls the amount of money in circulation and interest rates on loans."},{"t":"League of Women Voters","d":"Started by suffragist Carrie Chapman Catt as a result of women getting the right to vote. Goal was to encourage women to vote and support issues important to women."}],"ww1":[{"t":"Neutrality","d":"America's foreign policy at the start of WWI. The USA wanted to stay out of the war and did not officially support either alliance; it sold goods to both sides."},{"t":"Lusitania","d":"Passenger ship sunk by the Germans as a result of unrestricted submarine warfare. 128 American civilians were killed. This helped lead to U.S. entry into WWI."},{"t":"Sussex Pledge","d":"Promise made in 1916 by Germany to the USA to end unrestricted submarine warfare. The USA wanted freedom of the seas."},{"t":"Propaganda","d":"Information aimed at influencing the attitude of the community toward a cause or position by presenting one side of an argument. The U.S. government used it to gain support and funding for WWI."},{"t":"Unrestricted Submarine Warfare","d":"German policy of sinking ships entering the war zone without warning. It was a major reason for U.S. entry into WWI."},{"t":"Allied Powers","d":"Great Britain, France, Italy, and Russia. The U.S.A. joined the war on their side in 1917. Russia later left because of its revolution."},{"t":"Central Powers","d":"Alliance of Germany, Austria-Hungary, and the Ottoman Empire during WWI."},{"t":"Zimmerman Note","d":"A 1917 proposition from Germany to Mexico, intercepted by the U.S.A., asking Mexico to join the Central Powers and attack the U.S.A. Mexico was promised Texas, New Mexico, and Arizona."},{"t":"Russian Revolution","d":"Bolshevik/Communist revolution in Russia against the autocratic Tsarist government. It led Russia to stop fighting in WWI and eventually become the Soviet Union."},{"t":"Civil Liberties","d":"Rights and freedoms protected by the First Amendment, allowing people to speak, think, assemble, organize, worship, or petition without government interference or restraint."},{"t":"Espionage Act","d":"Law that prohibited interference with military operations or recruitment, and prohibited support for U.S. enemies during wartime. It was upheld in Schenck v. United States."},{"t":"Sedition Act","d":"Law that made certain negative speech toward or about the government during wartime or national crisis illegal because it could interfere with the war effort."},{"t":"Schenck v. United States","d":"A 1919 Supreme Court case ruling that limited freedom of speech during times of war or national crisis, restricting some civil liberties."},{"t":"Selective Service Act","d":"Federal law allowing the government to raise an army by requiring males ages 18–45 to sign up for the draft."},{"t":"14 Points","d":"Woodrow Wilson's postwar peace plan, calling for freedom of the seas, no secret treaties, free trade, an international organization, and other reforms. It was not adopted by the Allies or the USA."},{"t":"Treaty of Versailles","d":"Peace treaty for WWI. Germany had to take full blame for the war, dissolve its armed forces, and pay reparations. It created the League of Nations; the U.S. Senate rejected it."},{"t":"Big Four","d":"Leaders of the major Allied countries—Italy, France, the USA, and Great Britain—who met to form a peace agreement after WWI."},{"t":"Henry Cabot Lodge","d":"Republican senator during WWI who strongly opposed the Treaty of Versailles because of the League of Nations. He wanted the U.S. to control its foreign policy and avoid future wars."},{"t":"League of Nations","d":"International peace organization created by the Treaty of Versailles after WWI. The USA did not join because it feared being pulled into future foreign conflicts."},{"t":"First Red Scare","d":"American fear over the spread of communism after WWI due to the Russian Revolution. It increased fear of immigrants and communism/anarchy and contributed to restrictions on immigration."},{"t":"Palmer Raids","d":"Attempts in November 1919 and January 1920 to arrest and deport suspected radicals who supported anarchy or communism."},{"t":"War Industries Board","d":"Government agency created in 1917 to coordinate purchases of war supplies, set quotas, allocate raw materials, mediate labor disputes, and increase government control over the wartime economy."},{"t":"Food Administration","d":"Agency responsible for controlling food rationing and food prices during WWI and encouraging Americans to conserve food and grow their own gardens."},{"t":"Woodrow Wilson","d":"Democratic President from 1913–1921 who wanted the Allies and Central Powers to adopt his 14 Points and wanted the U.S. to join the League of Nations."},{"t":"Nationalism","d":"Feeling of being loyal to and proud of one's country, often accompanied by the belief that one's country is better or more important than others. A major cause of WWI in Europe."},{"t":"Militarism","d":"Belief that a country should use military methods and build up military forces to gain power and achieve its goals. A cause of WWI in Europe."},{"t":"Alliances","d":"Agreements or relationships between people, groups, or countries in which they agree to work together. A cause of WWI in Europe."},{"t":"Imperialism","d":"One country controlling another."}],"gd":[{"t":"Income Distribution","d":"How money is spread in a society."},{"t":"Buying on Margin","d":"Using credit from a stockbroker, or taking out loans, to purchase stock."},{"t":"Gross National Product","d":"The annual total of all new goods and services produced in a country."},{"t":"Hawley-Smoot Tariff","d":"Bill that raised import taxes during the Hoover administration. Goal was to help American business. But, it caused the depression to spread worldwide."},{"t":"Black Tuesday","d":"The day the stock market crashed in 1929; symbolized the start of the Great Depression."},{"t":"Herbert Hoover","d":"President at the start of the Great Depression. He didn’t believe in government intervention to aid the economy until the end of his term. Used indirect intervention to try and trigger a “trickle down” effect."},{"t":"Bonus Army (Bonus March)","d":"WWI veterans who protested in Washington D.C. because they wanted war bonuses paid earlier than the 1945 date they were promised. Some 3,000 who had set up tent cities were violently kicked out of the nation’s capital."},{"t":"Great Depression","d":"Severe worldwide economic crisis lasting from 1929-1941."},{"t":"Franklin D. Roosevelt (FDR)","d":"Elected to four terms, he pushed passage of the first and second New Deals. Credited with increasing the size and power of the federal government. He was the first president to engage in deficit spending."},{"t":"20th Amendment","d":"Shortened the length of time between the presidential election and when the new president takes office (known as the “lame duck” period). Moved the inauguration from March 4 to January 20. [People were disappointed FDR was unable to get into office quicker and take the action he promised]"},{"t":"Bank Holiday","d":"First act of FDR. Closed all banks to allow the federal government time to examine the causes of bank failures and determine the soundness of surviving banks so that people would have confidence in them."},{"t":"Fireside Chats","d":"FDR’s radio (mass media) addresses to unify the nation behind his New Deal policies."},{"t":"New Deal","d":"Laws and regulations approved with the purpose of bringing “relief, reform, and recovery” to fix the effects of the Great Depression and to hopefully prevent future depressions."},{"t":"FDIC","d":"This agency insured individual bank deposits up to $5,000. [Today: $250,000]"},{"t":"21st Amendment","d":"This repealed the 18th Amendment in 1933 and made alcohol legal again. Provided much needed tax dollars to fund New Deal programs."},{"t":"Keynesian Economics","d":"This promotes the belief that it is okay for governments to engage in deficit spending to stimulate the economy, especially during a depression."},{"t":"Glass-Steagall Act","d":"Law passed in 1933 that prohibited commercial banks from engaging in the investment (stocks, bonds) business."},{"t":"Civilian Conservation Corps (CCC)","d":"Government funded jobs for young men to enhance and preserve state and federal lands and parks."},{"t":"TVA","d":"Government program to build dams for the creation of hydroelectric power in rural areas of the eastern and southern U.S."},{"t":"National Recovery Administration","d":"Government agency that controlled prices to ensure a fair profit for businesses and fair wages for workers. Declared unconstitutional."},{"t":"Securities & Exchange Commission","d":"Government agency that regulates the activities of stockbrokers and the stock market."},{"t":"Works Progress Administration (WPA)","d":"Government funded jobs in the Second New Deal. Workers built roads, schools, and airports. It also created jobs for artists, writers and actors. Tried to reach a wide range of unemployed."},{"t":"Frances Perkins","d":"First female cabinet member to serve a president. Was Secretary of Labor under FDR from 1933-1945. Longest serving Sec. of Labor."},{"t":"Father Charles Coughlin","d":"Catholic Priest who supported FDR at first, but later criticized New Deal policies on his radio program. He wanted banks nationalized and tighter government control of monetary policies to help common folks."},{"t":"Huey Long","d":"Challenged FDR because he didn’t think New Deal went far enough. Supported the idea “share our wealth.” Tax the rich. Give to the poor."},{"t":"Dust Bowl","d":"Extreme natural disaster caused by drought and over-farming in the Midwest. Many of its victims moved to California to start a new life."},{"t":"Social Security Administration","d":"Agency that oversees a government-mandated pension (retirement program) for people 65 and older. All workers pay into the program."},{"t":"Collective Bargaining","d":"Negotiations between an employer and all its employees. The aim is to reach agreements regulating working conditions, pay, and benefits."},{"t":"Wagner Act","d":"Federal law that guarantees the rights of workers to join unions and bargain collectively for the terms and conditions of their employment."},{"t":"Rugged Individualism","d":"Idea Americans could pull themselves out of the Great Depression on their own through hard work and no government intervention."},{"t":"Court-Packing Scheme","d":"President Roosevelt proposal to add justices to the Supreme Court. He wanted to appoint judges who would support his New Deal programs. Was rejected by Republicans and some Democrats."},{"t":"22nd Amendment","d":"This limits a president to being elected to two terms. [Some realized that FDR being elected four times led to too much power.]"},{"t":"Fair Labor Standards Act","d":"Law that established the 40-hour workweek, minimum wage, and time and a half for overtime. Also prohibited “oppressive” child labor."},{"t":"Indian Reorganization Act","d":"Law whose goal was to reverse the policy of assimilation of Native Americans into American society; and, to strengthen, encourage and perpetuate the tribes and their historic traditions and culture."}]};
 
 // Chunks reference each unit's terms by their 1-based position in the original quiz.
 const UNITS = [
@@ -142,6 +182,12 @@ const UNITS = [
     ['Causes & the Road to War',[25,26,27,28,6,7,1,2,5,3,8,9]],
     ['The Home Front',[4,10,11,12,13,14,22,23]],
     ['Peace & Aftermath',[24,15,16,17,18,19,20,21]]
+  ]},
+  {key:'gd', name:'The Great Depression & New Deal', chunks:[
+    ['The Crash & Hard Times',[1,2,3,4,5,6,7,8,26,30]],
+    ['FDR Takes Charge',[9,10,11,12,13,14,15,16,17]],
+    ['The Alphabet Agencies',[18,19,20,21,22,27]],
+    ['Workers, Critics & Limits',[23,24,25,28,29,31,32,33,34]]
   ]}
 ];
 
@@ -232,7 +278,27 @@ const ALIASES = {
   'Wounded Knee Massacre':['wounded knee','battle of wounded knee'],
   'Populist Party (Omaha Platform)':['peoples party','populists'],
   'Federal Land Grants':['land grants'],
-  'Political Machine':['machine politics']
+  'Political Machine':['machine politics'],
+  'Franklin D. Roosevelt (FDR)':['franklin roosevelt','franklin delano roosevelt','roosevelt'],
+  'Herbert Hoover':['hoover'],
+  'Hawley-Smoot Tariff':['smoot hawley tariff','smoot hawley','hawley smoot'],
+  'Gross National Product':['gnp'],
+  'Buying on Margin':['buying on the margin','margin'],
+  'FDIC':['federal deposit insurance corporation'],
+  '20th Amendment':['twentieth amendment','lame duck amendment'],
+  '21st Amendment':['twenty first amendment'],
+  '22nd Amendment':['twenty second amendment'],
+  'Keynesian Economics':['keynesian','keynes'],
+  'TVA':['tennessee valley authority'],
+  'National Recovery Administration':['nra'],
+  'Securities & Exchange Commission':['sec'],
+  'Frances Perkins':['perkins'],
+  'Father Charles Coughlin':['charles coughlin','father coughlin','coughlin'],
+  'Huey Long':['long'],
+  'Social Security Administration':['social security','ssa'],
+  'Court-Packing Scheme':['court packing','court packing plan'],
+  'Fair Labor Standards Act':['flsa'],
+  'Indian Reorganization Act':['indian new deal']
 };
 const norm = s => s.toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]/g, '');
 const digits = s => s.replace(/\D/g, '');
@@ -279,6 +345,7 @@ function isMatch(input, term){
 // ---------- question building ----------
 function distractors(id, n){
   const t = TERMS[id];
+  if (session && session.pool) return shuffle(session.pool.filter(x => x !== id)).slice(0, n);
   const chunkMates = shuffle(CHUNKS[t.chunk].ids.filter(x => x !== id)).slice(0, 2);
   const unitMates = shuffle(UNIT[t.unit].ids.filter(x => x !== id && !chunkMates.includes(x)));
   return chunkMates.concat(unitMates).slice(0, n);
@@ -401,10 +468,11 @@ function advance(){
 }
 
 // ---------- DRILL (mastery mode) ----------
-function startDrill(ids, title, persist, backTo){
+function startDrill(ids, title, persist, pool){
+  modeKeys = null;
   const lv = {};
   ids.forEach(id => lv[id] = persist ? lvl(id) : 0);
-  session = {type:'drill', title, ids, persist, lv, right:0, wrong:0, missed:new Set(), backTo: backTo || 'home',
+  session = {type:'drill', title, ids, persist, lv, right:0, wrong:0, missed:new Set(), pool: pool || null,
              queue: shuffle(ids.filter(id => lv[id] < MASTER))};
   nextDrill();
 }
@@ -445,7 +513,7 @@ function drillDone(){
   const missed = [...s.missed];
   const nextChunk = s.persist ? CHUNKS.find(c => c.ids.some(id => lvl(id) < MASTER)) : null;
   app.innerHTML = `<div class="panel center">
-    <div class="eyebrow">Chunk complete</div>
+    <div class="eyebrow">${s.persist ? 'Chunk complete' : 'Session complete'}</div>
     <h2 style="font-size:28px;margin:8px 0">${esc(s.title)} — mastered</h2>
     <p class="sub">${total ? pct(s.right, total) + '% first-try accuracy this session (' + s.right + ' / ' + total + ')' : 'Already mastered.'}</p>
     ${missed.length ? `<p style="margin-bottom:0">These tripped you up — look them over once more:</p>
@@ -463,6 +531,7 @@ function drillChunk(i){ const c = CHUNKS[i]; startDrill(c.ids, c.name, true); }
 // ---------- EXAM ----------
 function examKind(){ const r = Math.random(); return r < .55 ? 'mc' : r < .75 ? 'rev' : 'type'; }
 function startExam(scope, ids, title){
+  modeKeys = null;
   session = {type:'exam', scope, title, list: shuffle(ids).map(id => ({id, kind: examKind()})), i:0, results:[]};
   nextExam();
 }
@@ -518,17 +587,19 @@ function examDone(){
 // ---------- STUDY LIST ----------
 function studyChunk(i){
   const c = CHUNKS[i];
-  session = null; Q = null;
+  session = null; Q = null; modeKeys = null;
   app.innerHTML = `<div class="deck"><div class="row"><div><div class="unit-num">${esc(UNIT[c.unit].name)}</div><h2 style="font-size:22px">${esc(c.name)}</h2></div>
-    <div class="btns"><button id="go">Drill this chunk →</button><button class="secondary" id="back">← Menu</button></div></div></div>
+    <div class="btns"><button id="go">Drill this chunk →</button><button class="secondary" id="fc">Flashcards</button><button class="secondary" id="mt">Matching</button><button class="secondary" id="back">← Menu</button></div></div></div>
     <div class="panel study">${c.ids.map(id => `<div class="item"><div class="t">${esc(TERMS[id].t)}</div><div class="d">${esc(TERMS[id].d)}</div></div>`).join('')}</div>`;
   $('go').onclick = () => drillChunk(i);
+  $('fc').onclick = () => startFlash(c.ids, c.name);
+  $('mt').onclick = () => startMatch(c.ids, c.name);
   $('back').onclick = goBack;
   window.scrollTo(0, 0);
 }
 
 // ---------- HOME ----------
-function goBack(){ session = null; Q = null; renderHome(); }
+function goBack(){ session = null; Q = null; modeKeys = null; renderHome(); window.scrollTo(0, 0); }
 function renderHome(){
   const mastered = ALL_IDS.filter(id => lvl(id) >= MASTER).length;
   const steps = ALL_IDS.reduce((a, id) => a + Math.min(MASTER, lvl(id)), 0);
@@ -548,6 +619,10 @@ function renderHome(){
     <div class="row" style="margin-top:8px">${best('all')}<button class="link" id="reset">Reset all progress</button></div>
     <div class="how"><b>How to get the 100:</b> Work each chunk until it says mastered — every term has to be picked from choices <i>and</i> typed from memory, and a miss sends it back to the start. After a unit is done, take its unit test. When all ${CHUNKS.length} chunks are green, take the full midterm exam until you hit 100%, then use <i>Weak spots</i> for anything that keeps slipping.</div>
   </div>
+  <section class="unit" style="margin-top:0">
+    <div class="row unit-head"><div><div class="unit-num">Other ways to learn it</div><h2>Study Modes</h2></div></div>
+    <div class="modes">${MODE_TILES.map(([k, n, d]) => `<button class="mode" data-mode="${k}"><b>${n}</b><span>${d}</span></button>`).join('')}</div>
+  </section>
   ${UNITS.map((u, ui) => {
     const um = u.ids.filter(id => lvl(id) >= MASTER).length;
     return `<section class="unit">
@@ -580,11 +655,344 @@ function renderHome(){
     drillChunk(c.idx);
   });
   document.querySelectorAll('[data-study]').forEach(b => b.onclick = () => studyChunk(+b.dataset.study));
+  document.querySelectorAll('[data-mode]').forEach(b => b.onclick = () => openMode(b.dataset.mode));
 }
+
+// ---------- STUDY MODES ----------
+let modeKeys = null; // keyboard handler for the non-question modes
+const ERAS = {ga:'c. 1870–1900', imp:'c. 1867–1914', prog:'c. 1890–1920', ww1:'1914–1920', gd:'1929–1941'};
+function scopeIds(sc){ return sc === 'all' ? ALL_IDS : sc[0] === 'u' ? UNIT[sc.slice(2)].ids : CHUNKS[+sc.slice(2)].ids; }
+function scopeName(sc){ return sc === 'all' ? 'Everything' : sc[0] === 'u' ? UNIT[sc.slice(2)].name : CHUNKS[+sc.slice(2)].name; }
+function modeHeader(title, sub, extra){
+  return `<div class="deck"><div class="row"><div><div class="unit-num">${esc(sub)}</div><h2 style="font-size:20px">${esc(title)}</h2></div><button class="secondary" id="back">← Menu</button></div>${extra || ''}</div>`;
+}
+function statBar(left, right, fill){
+  return `<div class="row stat-line" style="margin-top:8px"><span>${left}</span><span>${right}</span></div><div class="bar"><div style="width:${fill}%"></div></div>`;
+}
+function missedList(ids){
+  return ids.length ? `<div class="list">${ids.map(id => `<div><b>${esc(TERMS[id].t)}</b><span class="d">${esc(TERMS[id].d)}</span></div>`).join('')}</div>` : '';
+}
+function resultPanel(eyebrow, big, lines, missed, againFn, drillTitle){
+  session = null; Q = null; modeKeys = null;
+  app.innerHTML = `<div class="panel center"><div class="eyebrow">${esc(eyebrow)}</div><div class="big">${big}</div>${lines}
+    ${missed.length ? `<p style="margin-bottom:0;text-align:left"><b>Work on these (${missed.length}):</b></p>${missedList(missed)}` : '<p>Nothing missed. Clean.</p>'}
+    <div class="btns" style="justify-content:center;margin-top:10px">
+      ${missed.length ? '<button id="drillMissed">Drill these →</button>' : ''}
+      <button class="secondary" id="again">Go again</button><button class="secondary" id="menu">Menu</button></div></div>`;
+  if (missed.length) $('drillMissed').onclick = () => startDrill(missed, drillTitle, false);
+  $('again').onclick = againFn;
+  $('menu').onclick = goBack;
+  window.scrollTo(0, 0);
+}
+function openMode(key){
+  const m = MODES[key];
+  if (!m.scoped) return m.start();
+  session = null; Q = null; modeKeys = null;
+  app.innerHTML = modeHeader(m.name, 'Pick what to study', `<p class="sub" style="margin:10px 0 0">${m.desc}</p>`) +
+    `<div class="panel scope"><button class="scope-all" data-sc="all">Everything · ${ALL_IDS.length} terms</button>
+    ${UNITS.map(u => `<div class="scope-unit"><button class="secondary" data-sc="u:${u.key}"><b>${esc(u.name)}</b> · all ${u.ids.length}</button>
+      <div class="scope-chunks">${u.chunks.map(c => `<button class="secondary" data-sc="c:${c.idx}">${esc(c.name)} · ${c.ids.length}</button>`).join('')}</div></div>`).join('')}</div>`;
+  $('back').onclick = goBack;
+  document.querySelectorAll('[data-sc]').forEach(b => b.onclick = () => m.start(scopeIds(b.dataset.sc), scopeName(b.dataset.sc)));
+  window.scrollTo(0, 0);
+}
+
+// --- Flashcards: flip, then sort into "got it" / "still learning" (those come back) ---
+function startFlash(ids, name){
+  session = null; Q = null;
+  const F = {pile: shuffle(ids), known: 0, again: new Set(), flipped: false, defFirst: false};
+  const draw = () => {
+    if (!F.pile.length) return resultPanel('Flashcards · ' + name, ids.length + ' / ' + ids.length,
+      `<p class="sub">All cards sorted into "got it". ${F.again.size ? F.again.size + ' needed extra passes.' : 'None needed a second look.'}</p>`,
+      [...F.again], () => startFlash(ids, name), 'Flashcard trouble spots');
+    const t = TERMS[F.pile[0]];
+    const termSide = F.flipped === F.defFirst;
+    app.innerHTML = modeHeader('Flashcards', name, statBar(`Got it: <strong>${F.known}</strong> / ${ids.length}`, `${F.pile.length} left in the pile`, pct(F.known, ids.length))) +
+      `<div class="flash ${F.flipped ? 'flipped' : ''}" id="card">
+        <div class="side">${termSide ? 'Term' : 'Definition'}</div>
+        <div class="${termSide ? 'fterm' : 'fdef'}">${esc(termSide ? t.t : t.d)}</div>
+        <div class="side">${F.flipped ? esc(UNIT[t.unit].name + ' · ' + CHUNKS[t.chunk].name) : 'tap to flip'}</div></div>
+      <div class="btns" style="justify-content:center;margin-top:14px">
+        ${F.flipped ? '<button class="secondary" id="again">Still learning</button><button id="got">Got it ✓</button>' : '<button id="flip">Flip</button>'}</div>
+      <div class="row" style="justify-content:center;margin-top:12px"><label class="toggle"><input type="checkbox" id="rev" ${F.defFirst ? 'checked' : ''}> Show the definition first (harder)</label></div>
+      <div class="keys">Space = flip · 1 = still learning · 2 = got it</div>`;
+    $('back').onclick = goBack;
+    $('card').onclick = flip;
+    if (F.flipped) { $('again').onclick = again; $('got').onclick = got; } else $('flip').onclick = flip;
+    $('rev').onchange = e => { F.defFirst = e.target.checked; F.flipped = false; draw(); };
+  };
+  const flip = () => { F.flipped = !F.flipped; draw(); };
+  const got = () => { F.pile.shift(); F.known++; F.flipped = false; draw(); };
+  const again = () => {
+    const id = F.pile.shift(); F.again.add(id);
+    F.pile.splice(Math.min(F.pile.length, 3 + Math.floor(Math.random() * 3)), 0, id);
+    F.flipped = false; draw();
+  };
+  modeKeys = e => {
+    if (e.key === ' ') { e.preventDefault(); flip(); }
+    else if (F.flipped && e.key === '1') again();
+    else if (F.flipped && e.key === '2') got();
+  };
+  draw();
+}
+
+// --- Matching: 6 pairs per round ---
+function startMatch(ids, name){
+  session = null; Q = null; modeKeys = null;
+  const order = shuffle(ids), batches = [];
+  for (let i = 0; i < order.length; i += 6) batches.push(order.slice(i, i + 6));
+  if (batches.length > 1 && batches[batches.length - 1].length < 3) batches[batches.length - 2].push(...batches.pop());
+  const M = {b: 0, mistakes: 0, missed: new Set(), sel: null, done: 0};
+  const draw = () => {
+    const round = batches[M.b]; M.done = 0; M.sel = null;
+    app.innerHTML = modeHeader('Matching', name, statBar(`Round <strong>${M.b + 1}</strong> / ${batches.length}`, `Mistakes: <strong id="mm">${M.mistakes}</strong>`, pct(M.b, batches.length))) +
+      `<p class="sub center" style="margin-top:0">Tap a term, then tap its definition.</p>
+      <div class="match"><div class="mcol">${shuffle(round).map(id => `<button class="mi term" data-id="${id}" data-side="t">${esc(TERMS[id].t)}</button>`).join('')}</div>
+      <div class="mcol">${shuffle(round).map(id => `<button class="mi def" data-id="${id}" data-side="d">${esc(TERMS[id].d)}</button>`).join('')}</div></div>
+      <div class="btns hidden" id="mnext" style="justify-content:center;margin-top:16px"><button id="nextRound">${M.b + 1 < batches.length ? 'Next round →' : 'See results'}</button></div>`;
+    $('back').onclick = goBack;
+    document.querySelectorAll('.mi').forEach(el => el.onclick = () => pick(el, round.length));
+  };
+  const pick = (el, n) => {
+    if (el.classList.contains('matched')) return;
+    if (M.sel === el) { el.classList.remove('selected'); M.sel = null; return; }
+    if (!M.sel || M.sel.dataset.side === el.dataset.side) { if (M.sel) M.sel.classList.remove('selected'); M.sel = el; el.classList.add('selected'); return; }
+    const a = M.sel; M.sel = null; a.classList.remove('selected');
+    if (a.dataset.id === el.dataset.id) {
+      [a, el].forEach(x => { x.classList.add('matched'); x.disabled = true; });
+      if (++M.done === n) {
+        $('mnext').classList.remove('hidden');
+        $('nextRound').onclick = () => { M.b++; M.b < batches.length ? draw() : done(); };
+        $('nextRound').focus();
+      }
+    } else {
+      M.mistakes++; $('mm').textContent = M.mistakes;
+      const termId = (a.dataset.side === 't' ? a : el).dataset.id;
+      M.missed.add(termId); S.miss[termId] = (S.miss[termId] || 0) + 1; save();
+      [a, el].forEach(x => { x.classList.add('bad'); setTimeout(() => x.classList.remove('bad'), 450); });
+    }
+  };
+  const done = () => resultPanel('Matching · ' + name, M.mistakes === 0 ? 'Perfect' : plural(M.mistakes, 'mistake'),
+    `<p class="sub">${ids.length} pairs matched.</p>`, [...M.missed], () => startMatch(ids, name), 'Matching mix-ups');
+  draw();
+}
+
+// --- True or False: is this the right definition for this term? ---
+function startTF(ids, name){
+  session = null; Q = null;
+  const T = {queue: shuffle(ids), i: 0, right: 0, streak: 0, best: 0, missed: [], cur: null};
+  const draw = () => {
+    if (T.i >= T.queue.length) return resultPanel('True or False · ' + name, pct(T.right, T.queue.length) + '%',
+      `<p class="sub">${T.right} / ${T.queue.length} correct · best streak ${T.best}</p>`, T.missed, () => startTF(ids, name), 'True/False misses');
+    const id = T.queue[T.i], real = Math.random() < .5;
+    const shown = real ? id : distractors(id, 1)[0];
+    T.cur = {id, shown, real, answered: false};
+    app.innerHTML = modeHeader('True or False', name, statBar(`<strong>${T.i + 1}</strong> / ${T.queue.length} · correct <strong>${T.right}</strong>`, `Streak: <strong>${T.streak}</strong>`, pct(T.i, T.queue.length))) +
+      `<div class="card"><div class="ask">Is this the correct definition for…</div><div class="prompt term">${esc(TERMS[id].t)}</div>
+      <div class="prompt tfdef">${esc(TERMS[shown].d)}</div>
+      <div class="tf"><button class="opt" id="tfT"><span class="k">1</span>True</button><button class="opt" id="tfF"><span class="k">2</span>False</button></div>
+      <div class="feedback" id="fb"></div><div class="actions"><span></span><button id="next" class="hidden">Next →</button></div></div>
+      <div class="keys">1 = true · 2 = false · Enter = next</div>`;
+    $('back').onclick = goBack;
+    $('tfT').onclick = () => answer(true);
+    $('tfF').onclick = () => answer(false);
+    $('next').onclick = next;
+  };
+  const answer = saidTrue => {
+    const c = T.cur; if (c.answered) return; c.answered = true;
+    const ok = saidTrue === c.real, t = TERMS[c.id];
+    if (ok) { T.right++; T.streak++; T.best = Math.max(T.best, T.streak); }
+    else { T.streak = 0; T.missed.push(c.id); S.miss[c.id] = (S.miss[c.id] || 0) + 1; save(); }
+    $('tfT').disabled = $('tfF').disabled = true;
+    $(c.real ? 'tfT' : 'tfF').classList.add('correct');
+    if (!ok) $(saidTrue ? 'tfT' : 'tfF').classList.add('wrong');
+    $('fb').innerHTML = (ok ? '<span class="good">✓ Correct.</span> ' : '<span class="bad">✗ Nope.</span> ') +
+      (c.real ? `That really is the definition of <b>${esc(t.t)}</b>.`
+              : `That's the definition of <b>${esc(TERMS[c.shown].t)}</b>.<span class="def"><b>${esc(t.t)}</b> actually means: ${esc(t.d)}</span>`);
+    $('next').classList.remove('hidden'); $('next').focus();
+  };
+  const next = () => { if (T.cur && T.cur.answered) { T.i++; draw(); } };
+  modeKeys = e => {
+    if (e.key === '1' || e.key.toLowerCase() === 't') answer(true);
+    else if (e.key === '2' || e.key.toLowerCase() === 'f') answer(false);
+    else if (e.key === 'Enter' && e.target.id !== 'next') { e.preventDefault(); next(); }
+  };
+  draw();
+}
+
+// --- Which era? A few terms appear in two units, so any unit that has them counts. ---
+function eraKey(t){
+  const n = norm(t);
+  if (n === 'theodoreroosevelt' || n === 'teddyroosevelt') return 'roosevelt';
+  if (n === 'nationalamericanwomansuffrageassociation' || n === 'nationalwomensuffrageassociation') return 'suffrage';
+  return n;
+}
+function unitsFor(id){ const k = eraKey(TERMS[id].t); return UNITS.filter(u => u.ids.some(x => eraKey(TERMS[x].t) === k)).map(u => u.key); }
+function startEra(){
+  session = null; Q = null;
+  const ids = shuffle(ALL_IDS).slice(0, 30);
+  const E = {i: 0, right: 0, missed: [], answered: false};
+  const draw = () => {
+    if (E.i >= ids.length) return resultPanel('Which era?', pct(E.right, ids.length) + '%',
+      `<p class="sub">${E.right} / ${ids.length} placed in the right unit.</p>`, E.missed, startEra, 'Era mix-ups');
+    const t = TERMS[ids[E.i]]; E.answered = false;
+    app.innerHTML = modeHeader('Which era?', '30 random terms from all five units', statBar(`<strong>${E.i + 1}</strong> / ${ids.length}`, `Correct: <strong>${E.right}</strong>`, pct(E.i, ids.length))) +
+      `<div class="card"><div class="ask">Which unit is this term from?</div><div class="prompt term">${esc(t.t)}</div>
+      <div class="center" style="margin:-10px 0 16px"><button class="link" id="hint">Show the definition</button><div class="sub hidden" id="hintText" style="margin-top:6px">${esc(t.d)}</div></div>
+      <div class="eras">${UNITS.map((u, k) => `<button class="opt" data-u="${u.key}"><span><span class="k">${k + 1}</span> ${esc(u.name)}</span><small>${ERAS[u.key]}</small></button>`).join('')}</div>
+      <div class="feedback" id="fb"></div><div class="actions"><span></span><button id="next" class="hidden">Next →</button></div></div>
+      <div class="keys">1–5 = pick a unit · Enter = next</div>`;
+    $('back').onclick = goBack;
+    $('hint').onclick = () => { $('hintText').classList.remove('hidden'); $('hint').classList.add('hidden'); };
+    document.querySelectorAll('[data-u]').forEach(b => b.onclick = () => answer(b.dataset.u));
+    $('next').onclick = next;
+  };
+  const answer = uk => {
+    if (E.answered) return; E.answered = true;
+    const id = ids[E.i], t = TERMS[id], homes = unitsFor(id), ok = homes.includes(uk);
+    if (ok) E.right++; else { E.missed.push(id); S.miss[id] = (S.miss[id] || 0) + 1; save(); }
+    document.querySelectorAll('[data-u]').forEach(b => { b.disabled = true; b.classList.add(homes.includes(b.dataset.u) ? 'correct' : b.dataset.u === uk ? 'wrong' : 'faded'); });
+    $('fb').innerHTML = (ok ? '<span class="good">✓ Correct.</span> ' : `<span class="bad">✗ It's from ${esc(homes.map(k => UNIT[k].name).join(' and '))}.</span> `) +
+      (homes.length > 1 ? `(This term shows up in both ${esc(homes.map(k => UNIT[k].name).join(' and '))}.)` : '') +
+      `<span class="def">${esc(t.d)}</span>`;
+    $('hint').classList.add('hidden');
+    $('next').classList.remove('hidden'); $('next').focus();
+  };
+  const next = () => { if (E.answered) { E.i++; draw(); } };
+  modeKeys = e => {
+    if (/^[1-5]$/.test(e.key)) answer(UNITS[+e.key - 1].key);
+    else if (e.key === 'Enter' && e.target.id !== 'next') { e.preventDefault(); next(); }
+  };
+  draw();
+}
+
+// --- Compare: side-by-side breakdowns of terms that are easy to mix up ---
+const GROUPS = [
+  {name:'Vertical vs. Horizontal Integration', terms:[['ga','Vertical Integration'],['ga','Horizontal Integration'],['ga','Monopoly/Trust']],
+   tip:'<b>Vertical</b> = own <i>every step</i> — raw materials → manufacturing → transportation → sale. <b>Horizontal</b> = control <i>one step</i> of the industry (Rockefeller at the refinery level). Both are ways to build a <b>monopoly/trust</b>.'},
+  {name:'Keeping Black Southerners from voting', terms:[['ga','Poll Tax'],['ga','Literacy Test'],['ga','Grandfather Clause'],['ga','Disenfranchisement']],
+   tip:'<b>Poll tax</b> = pay to vote. <b>Literacy test</b> = pass a reading test to vote. <b>Grandfather clause</b> = skip both if your grandfather or father voted (which protected poor white voters). <b>Disenfranchisement</b> = the result: being kept from voting.'},
+  {name:'Segregation: the promise, the laws, the ruling', terms:[['ga','14th Amendment'],['ga','Jim Crow Laws'],['ga','Plessy v. Ferguson']],
+   tip:'<b>14th Amendment</b> = citizenship and equal protection for former slaves. <b>Jim Crow laws</b> = the Southern segregation laws. <b>Plessy v. Ferguson</b> (1896) = the Supreme Court said "separate but equal" did not violate the 14th, making Jim Crow legal.'},
+  {name:'Civil rights leaders & groups', terms:[['ga','Booker T. Washington'],['ga','W.E.B. DuBois'],['ga','Ida B. Wells'],['prog','Niagara Movement'],['prog','NAACP']],
+   tip:'<b>Washington</b> = gain rights <i>gradually</i> through education and the economy (Atlanta Compromise). <b>Du Bois</b> = rights <i>immediately</i>; founded the <b>Niagara Movement</b> and helped found the <b>NAACP</b>, which fights in the courts. <b>Ida B. Wells</b> = exposed lynching through journalism.'},
+  {name:'The tycoons', terms:[['ga','John Rockefeller'],['ga','Andrew Carnegie'],['ga','Cornelius Vanderbilt'],['ga','J.P. Morgan']],
+   tip:'<b>Rockefeller</b> = oil (Standard Oil). <b>Carnegie</b> = steel (became U.S. Steel), wrote the Gospel of Wealth, gave away 90%. <b>Vanderbilt</b> = railroads. <b>Morgan</b> = the banker who financed the big mergers.'},
+  {name:'Justifying wealth vs. helping the poor', terms:[['ga','Laissez-Faire Capitalism'],['ga','Social Darwinism (Survival of the Fittest)'],['ga','Gospel of Wealth'],['ga','Social Gospel Movement']],
+   tip:'<b>Laissez-faire</b> = the government keeps its hands off business. <b>Social Darwinism</b> = the strongest win, so monopolies are natural. <b>Gospel of Wealth</b> = Carnegie: the rich should give back through charity. <b>Social Gospel</b> = Christians have a duty to fix poverty and city problems. The two "gospels" sound alike: one is about the <i>rich giving</i>, the other is a <i>reform movement</i>.'},
+  {name:'Labor unions', terms:[['ga','Knights of Labor'],['ga','American Federation of Labor'],['ga','Yellow-Dog contract'],['ga','Eugene V. Debs'],['ga','Socialism']],
+   tip:'<b>Knights of Labor</b> (Powderly) = let everyone in, went after big goals (child labor, monopolies) and failed. <b>AFL</b> (Gompers) = focused on pay, safety and hours, and still exists. <b>Yellow-dog contract</b> = a promise not to join a union. <b>Debs</b> = union leader who headed the Socialist Party.'},
+  {name:'Nativism vs. Nationalism', terms:[['ga','Nativism'],['ww1','Nationalism'],['ga','Chinese Exclusion Act'],['imp','Gentlemen’s Agreement']],
+   tip:'<b>Nativism</b> = favoring native-born Americans over <i>immigrants</i> (Gilded Age). <b>Nationalism</b> = pride in and loyalty to your <i>country</i>, a cause of WWI. The <b>Chinese Exclusion Act</b> (Chinese) and the <b>Gentlemen’s Agreement</b> (Japanese) are nativism in action.'},
+  {name:'Temperance & prohibition', terms:[['ga','Anti-Saloon League'],['ga','Women\'s Christian Temperance Union (WCTU)'],['prog','18th Amendment'],['gd','21st Amendment']],
+   tip:'Both groups pushed prohibition. <b>WCTU</b> = Christian women, often the wives, mothers or daughters of heavy drinkers. <b>Anti-Saloon League</b> = protested at bars (Carrie Nation smashed kegs). The <b>18th Amendment</b> was the result: alcohol banned. The <b>21st Amendment</b> (1933) repealed it and made alcohol legal again.'},
+  {name:'Farmers organize', terms:[['ga','Grange Movement'],['ga','Farmers\' Alliance'],['ga','Populist Party (Omaha Platform)']],
+   tip:'In order: the <b>Grange</b> fought railroads and grain elevators with state laws → the <b>Farmers’ Alliance</b> (white and Black farmers) came next → it led to the <b>Populist Party</b> and its Omaha Platform.'},
+  {name:'The money fight', terms:[['ga','Gold Standard'],['ga','Bimetallism (Free Silver)'],['ga','Cross of Gold Speech'],['ga','William Jennings Bryan']],
+   tip:'<b>Gold standard</b> = less money in circulation and low inflation (business liked it). <b>Bimetallism / free silver</b> = gold <i>and</i> silver, so more money and a little inflation (farmers liked it). <b>Bryan</b> gave the <b>Cross of Gold</b> speech against the gold standard.'},
+  {name:'Regulating railroads & trusts', terms:[['ga','Wabash v. Illinois'],['ga','Interstate Commerce Act'],['prog','Elkins Act'],['ga','Sherman Antitrust Act'],['prog','Clayton Anti-Trust Act']],
+   tip:'<b>Wabash</b> = states <i>can’t</i> regulate railroads that cross state lines → the <b>Interstate Commerce Act</b> (federal: rates must be "reasonable and just"). <b>Elkins</b> = lets the ICC fine railroads for unfair rebates. <b>Sherman</b> (Gilded Age) = first law making monopolies illegal. <b>Clayton</b> (Wilson era) = gave the government more power to break up trusts.'},
+  {name:'Political machines', terms:[['ga','Political Machine'],['ga','Party Boss'],['ga','Pendleton Civil Service Act']],
+   tip:'<b>Machine</b> = the organization trading jobs and housing for votes. <b>Boss</b> = the person running it (Boss Tweed, Tammany Hall). <b>Pendleton Act</b> = government jobs given on merit, which weakened the machines.'},
+  {name:'Native American policy', terms:[['ga','Reservation'],['ga','Dawes (Severalty) Act'],['ga','Assimilation'],['ga','Indian Wars'],['ga','Wounded Knee Massacre']],
+   tip:'<b>Reservation</b> = land Native Americans were forced onto. <b>Dawes Act</b> (1887) = split tribal land into family parcels for farming, with the leftover land going to settlers. <b>Assimilation</b> = the goal of making Natives adopt white culture. The <b>Indian Wars</b> (1854–1890) ended with <b>Wounded Knee</b> (1890).'},
+  {name:'Teller vs. Platt Amendment', terms:[['imp','Teller Amendment'],['imp','Platt Amendment']],
+   tip:'<b>Teller</b> = at the <i>start</i> of the war: the U.S. can fight in Cuba but can’t annex it. <b>Platt</b> = <i>after</i> the war: Cuba is free, but the U.S. can intervene and gets Guantanamo Bay. Trick: T comes before P.'},
+  {name:'Foreign policy by president', terms:[['imp','Big Stick Policy'],['imp','Roosevelt Corollary'],['imp','Dollar Diplomacy'],['imp','Moral Diplomacy']],
+   tip:'<b>Roosevelt</b>: the <b>Big Stick</b> (negotiate, backed by the threat of force) and the <b>Roosevelt Corollary</b> (an add-on to the Monroe Doctrine: the U.S. polices Latin America). <b>Taft</b>: <b>Dollar Diplomacy</b> (investment). <b>Wilson</b>: <b>Moral Diplomacy</b> (only support democracies). In order: Roosevelt, Taft, Wilson → stick, dollars, morals.'},
+  {name:'China', terms:[['imp','Sphere of Influence'],['imp','Open Door Policy'],['imp','Boxer Rebellion']],
+   tip:'<b>Sphere of influence</b> = an area one nation controls. <b>Open Door</b> = the U.S. wanted free trade in China and <i>no</i> spheres. <b>Boxer Rebellion</b> = the Chinese rising up against foreigners and missionaries.'},
+  {name:'Road to the Spanish-American War', terms:[['imp','Yellow Journalism'],['imp','USS Maine'],['imp','Spanish-American War'],['imp','Rough Riders']],
+   tip:'<b>Yellow journalism</b> stirred people up → the <b>Maine</b> exploded in Havana and Spain was blamed → the <b>war</b> (1898, 3 months) made the U.S. a world power → the <b>Rough Riders</b> were Roosevelt’s volunteer cavalry at San Juan Hill.'},
+  {name:'Giving voters power', terms:[['prog','Initiative'],['prog','Referendum'],['prog','Recall'],['prog','Direct Primary'],['prog','Australian (Secret) Ballot'],['prog','17th Amendment']],
+   tip:'<b>Initiative</b> = citizens <i>petition</i> to propose or change a law. <b>Referendum</b> = the public <i>votes</i> on a proposed law. <b>Recall</b> = vote to <i>remove</i> an official early. <b>Direct primary</b> = voters pick the candidates. <b>Secret ballot</b> = vote in private. <b>17th</b> = voters elect senators directly.'},
+  {name:'The Progressive amendments', terms:[['prog','16th Amendment'],['prog','17th Amendment'],['prog','18th Amendment'],['prog','19th Amendment']],
+   tip:'<b>16</b> = income tax. <b>17</b> = voters elect senators. <b>18</b> = prohibition. <b>19</b> = women can vote. Memory trick, in order: <b>money, senators, alcohol, women</b>.'},
+  {name:'Food safety', terms:[['prog','Muckrakers'],['prog','The Jungle'],['prog','Meat Inspection Act (1906)'],['prog','Pure Food and Drug Act (1906)']],
+   tip:'<b>Muckrakers</b> exposed problems → <b>The Jungle</b> (Upton Sinclair) exposed the meatpacking plants → the <b>Meat Inspection Act</b> required clean plants. The <b>Pure Food and Drug Act</b> is about <i>honest labels</i>.'},
+  {name:'Tariffs', terms:[['ga','Tariff'],['prog','Payne-Aldrich Tariff'],['prog','Underwood Tariff'],['gd','Hawley-Smoot Tariff']],
+   tip:'<b>Tariff</b> = a tax on imports. <b>Payne-Aldrich</b> (Taft) <i>raised</i> tariffs and cost Taft Roosevelt’s support. <b>Underwood</b> (Wilson) <i>lowered</i> them from 40% to 25%. <b>Hawley-Smoot</b> (Hoover) <i>raised</i> them and helped spread the Depression worldwide.'},
+  {name:'The Progressive presidents', terms:[['prog','Teddy Roosevelt'],['prog','Square Deal'],['prog','William Howard Taft'],['prog','Bull Moose Party'],['ww1','Woodrow Wilson']],
+   tip:'<b>Roosevelt</b> (1901–09): the <b>Square Deal</b>, trust busting, conservation. <b>Taft</b> (1909–13): Roosevelt’s pick, but cut back conservation and angered him. In 1912 Roosevelt ran with the <b>Bull Moose Party</b>, which split the Republican vote. <b>Wilson</b> (1913–21) led through WWI.'},
+  {name:'Women’s suffrage', terms:[['ga','National American Woman Suffrage Association'],['prog','19th Amendment'],['prog','League of Women Voters']],
+   tip:'<b>NAWSA</b> (Anthony, Catt, Shaw) = fought for the vote → the <b>19th Amendment</b> won it → Catt then started the <b>League of Women Voters</b> to get women voting.'},
+  {name:'Why the U.S. entered WWI', terms:[['ww1','Neutrality'],['ww1','Unrestricted Submarine Warfare'],['ww1','Lusitania'],['ww1','Sussex Pledge'],['ww1','Zimmerman Note']],
+   tip:'The U.S. starts <b>neutral</b> → Germany’s <b>unrestricted submarine warfare</b> sinks the <b>Lusitania</b> → the <b>Sussex Pledge</b> (1916) promises to stop → Germany restarts it, and the <b>Zimmerman Note</b> (1917) asks Mexico to attack the U.S. → the U.S. joins the war.'},
+  {name:'Free speech in wartime', terms:[['ww1','Civil Liberties'],['ww1','Espionage Act'],['ww1','Sedition Act'],['ww1','Schenck v. United States']],
+   tip:'<b>Espionage Act</b> = no interfering with the military or the draft, and no helping enemies. <b>Sedition Act</b> = no negative <i>speech</i> about the government. <b>Schenck</b> = the Supreme Court upheld limits on free speech in wartime. Together they restricted <b>civil liberties</b>.'},
+  {name:'The two sides', terms:[['ww1','Allied Powers'],['ww1','Central Powers'],['ww1','Alliances']],
+   tip:'<b>Allies</b> = Great Britain, France, Italy, Russia (the U.S. joined in 1917). <b>Central Powers</b> = Germany, Austria-Hungary, the Ottoman Empire, the ones in the <i>center</i> of Europe.'},
+  {name:'Causes of WWI (M.A.I.N.)', terms:[['ww1','Militarism'],['ww1','Alliances'],['ww1','Imperialism'],['ww1','Nationalism']],
+   tip:'<b>M</b>ilitarism (build up the military), <b>A</b>lliances (agreements that dragged countries in), <b>I</b>mperialism (one country controlling another), <b>N</b>ationalism (extreme national pride).'},
+  {name:'Ending the war', terms:[['ww1','14 Points'],['ww1','Treaty of Versailles'],['ww1','League of Nations'],['ww1','Big Four'],['ww1','Henry Cabot Lodge']],
+   tip:'The <b>14 Points</b> = Wilson’s plan, <i>not</i> adopted. The <b>Big Four</b> wrote the real treaty, <b>Versailles</b>, which blamed Germany and created the <b>League of Nations</b>. <b>Lodge</b> led the Senate fight against it, so the U.S. never joined the League.'},
+  {name:'The home front', terms:[['ww1','Selective Service Act'],['ww1','War Industries Board'],['ww1','Food Administration'],['ww1','Propaganda']],
+   tip:'<b>Selective Service</b> = the draft (men 18–45). <b>War Industries Board</b> = ran factories, materials and supplies. <b>Food Administration</b> = food rationing and prices. <b>Propaganda</b> = one-sided messages to win support for the war.'},
+  {name:'After the war: fear of communism', terms:[['ww1','Russian Revolution'],['ww1','First Red Scare'],['ww1','Palmer Raids']],
+   tip:'The <b>Russian Revolution</b> (communists take over) → the <b>First Red Scare</b> (Americans fear communism and immigrants) → the <b>Palmer Raids</b> (1919–20 arrests and deportations of suspected radicals).'},
+  {name:'The crash', terms:[['gd','Buying on Margin'],['gd','Black Tuesday'],['gd','Great Depression'],['gd','Gross National Product'],['gd','Income Distribution']],
+   tip:'<b>Buying on margin</b> = buying stock with borrowed money. When prices fell on <b>Black Tuesday</b> (1929) the market crashed, which marked the start of the <b>Great Depression</b> (1929–1941). <b>GNP</b> = the yearly total of goods and services. <b>Income distribution</b> = how money is spread across society.'},
+  {name:'Hoover vs. FDR', terms:[['gd','Herbert Hoover'],['gd','Rugged Individualism'],['gd','Franklin D. Roosevelt (FDR)'],['gd','New Deal'],['gd','Keynesian Economics']],
+   tip:'<b>Hoover</b> = little government help, <b>rugged individualism</b> (get yourself out through hard work), "trickle down." <b>FDR</b> = the <b>New Deal</b> (relief, reform, recovery), a bigger federal government, and deficit spending, which is the <b>Keynesian</b> idea.'},
+  {name:'The alphabet agencies', terms:[['gd','Civilian Conservation Corps (CCC)'],['gd','Works Progress Administration (WPA)'],['gd','TVA'],['gd','National Recovery Administration'],['gd','Securities & Exchange Commission'],['gd','FDIC'],['gd','Social Security Administration']],
+   tip:'<b>CCC</b> = young men working on parks and public land. <b>WPA</b> = Second New Deal jobs building roads, schools and airports, plus jobs for artists and writers. <b>TVA</b> = dams and hydroelectric power. <b>NRA</b> = controlled prices and wages, later ruled unconstitutional. <b>SEC</b> = watches the stock market. <b>FDIC</b> = insures bank deposits. <b>Social Security</b> = pensions for people 65 and older.'},
+  {name:'Fixing the banks', terms:[['gd','Bank Holiday'],['gd','FDIC'],['gd','Glass-Steagall Act'],['gd','Securities & Exchange Commission']],
+   tip:'<b>Bank Holiday</b> = FDR’s first act: close every bank and inspect it. <b>FDIC</b> = insures your deposits (then $5,000). <b>Glass-Steagall</b> = commercial banks can’t be in the stock and bond business. <b>SEC</b> = regulates stockbrokers and the market.'},
+  {name:'Three Depression-era amendments', terms:[['gd','20th Amendment'],['gd','21st Amendment'],['gd','22nd Amendment']],
+   tip:'<b>20th</b> = shorter "lame duck" period; inauguration moved to January 20. <b>21st</b> = repealed the 18th, so alcohol is legal again (1933). <b>22nd</b> = presidents limited to two terms, a reaction to FDR’s four.'},
+  {name:'New Deal critics', terms:[['gd','Father Charles Coughlin'],['gd','Huey Long'],['gd','Court-Packing Scheme']],
+   tip:'<b>Coughlin</b> = radio priest who supported FDR at first, then attacked the New Deal and wanted the banks nationalized. <b>Long</b> = said the New Deal didn’t go <i>far enough</i>: "Share Our Wealth." <b>Court-packing</b> = FDR’s plan to add pro-New Deal justices to the Supreme Court, which was rejected.'},
+  {name:'Workers’ rights in the New Deal', terms:[['gd','Collective Bargaining'],['gd','Wagner Act'],['gd','Fair Labor Standards Act'],['gd','Frances Perkins']],
+   tip:'<b>Collective bargaining</b> = workers negotiating as a group. <b>Wagner Act</b> = guarantees the right to unionize and bargain collectively. <b>Fair Labor Standards Act</b> = 40-hour week, minimum wage, overtime, and limits on child labor. <b>Perkins</b> = Secretary of Labor and the first woman in a president’s cabinet.'},
+  {name:'Dawes Act vs. Indian Reorganization Act', terms:[['ga','Dawes (Severalty) Act'],['ga','Assimilation'],['gd','Indian Reorganization Act']],
+   tip:'<b>Dawes Act</b> (1887, Gilded Age) = split up tribal land to push <b>assimilation</b>. The <b>Indian Reorganization Act</b> (New Deal) = <i>reversed</i> assimilation and strengthened the tribes and their cultures.'}
+];
+GROUPS.forEach(g => g.ids = g.terms.map(([u, name]) => UNIT[u].ids.find(id => TERMS[id].t === name)));
+
+function startCompare(){
+  session = null; Q = null; modeKeys = null;
+  app.innerHTML = modeHeader('Compare', `${GROUPS.length} sets of easily confused terms`, `<p class="sub" style="margin:10px 0 0">Each set puts look-alike terms side by side with the key difference spelled out. Read it, then quiz yourself on just that set.</p>`) +
+    `<div class="chunks">${GROUPS.map((g, i) => `<button class="mode" data-g="${i}"><b>${esc(g.name)}</b><span>${g.ids.map(id => esc(TERMS[id].t)).join(' · ')}</span></button>`).join('')}</div>`;
+  $('back').onclick = goBack;
+  document.querySelectorAll('[data-g]').forEach(b => b.onclick = () => compareGroup(+b.dataset.g));
+  window.scrollTo(0, 0);
+}
+function compareGroup(i){
+  const g = GROUPS[i];
+  app.innerHTML = modeHeader(g.name, 'Compare', '') +
+    `<div class="tip"><div class="unit-num" style="margin-bottom:4px">The difference</div>${g.tip}</div>
+    <div class="cmp">${g.ids.map(id => `<div class="c"><span class="u">${esc(UNIT[TERMS[id].unit].name)}</span><b>${esc(TERMS[id].t)}</b><p>${esc(TERMS[id].d)}</p></div>`).join('')}</div>
+    <div class="btns" style="justify-content:center;margin-top:18px">
+      <button id="quiz">Quiz me on these ${g.ids.length} →</button>
+      ${i + 1 < GROUPS.length ? `<button class="secondary" id="nextG">Next set: ${esc(GROUPS[i + 1].name)}</button>` : ''}
+      <button class="secondary" id="all">All sets</button></div>`;
+  $('back').onclick = goBack;
+  $('quiz').onclick = () => startDrill(g.ids, g.name, false, g.ids);
+  if (i + 1 < GROUPS.length) $('nextG').onclick = () => compareGroup(i + 1);
+  $('all').onclick = startCompare;
+  window.scrollTo(0, 0);
+}
+
+const MODES = {
+  flash:   {name:'Flashcards', scoped:true, start:startFlash, desc:'Flip through cards and sort them into "got it" or "still learning". The ones you\'re still learning come back until you know them.'},
+  match:   {name:'Matching', scoped:true, start:startMatch, desc:'Match terms to definitions, six pairs per round, like the matching section on a test.'},
+  tf:      {name:'True or False', scoped:true, start:startTF, desc:'Fast round: is this the right definition for this term? Wrong pairings come from look-alike terms in the same unit.'},
+  compare: {name:'Compare', scoped:false, start:startCompare},
+  era:     {name:'Which era?', scoped:false, start:startEra}
+};
+const MODE_TILES = [
+  ['flash', 'Flashcards', 'Flip cards and sort them into got it / still learning.'],
+  ['match', 'Matching', 'Pair terms with definitions, six at a time.'],
+  ['tf', 'True or False', 'Speed round: does this definition fit this term?'],
+  ['compare', 'Compare', 'Look-alike terms side by side, with the key difference explained.'],
+  ['era', 'Which era?', 'Place each term in its unit to build the timeline.']
+];
 
 // ---------- keyboard ----------
 document.addEventListener('keydown', e => {
-  if (!Q || e.target.tagName === 'INPUT' || e.metaKey || e.ctrlKey || e.altKey) return;
+  if (e.target.tagName === 'INPUT' || e.metaKey || e.ctrlKey || e.altKey) return;
+  if (modeKeys) return modeKeys(e);
+  if (!Q) return;
   if (/^[1-4]$/.test(e.key) && !Q.answered && Q.opts) {
     const b = document.querySelectorAll('.opt')[+e.key - 1];
     if (b) b.click();
@@ -593,6 +1001,7 @@ document.addEventListener('keydown', e => {
   }
 });
 
+$('totalTerms').textContent = ALL_IDS.length;
 renderHome();
 </script>
 </body>
